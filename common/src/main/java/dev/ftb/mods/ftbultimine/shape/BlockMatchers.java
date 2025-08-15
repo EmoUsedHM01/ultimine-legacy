@@ -4,9 +4,9 @@ import dev.ftb.mods.ftbultimine.api.shape.Shape;
 import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
 import dev.ftb.mods.ftbultimine.config.FTBUltimineServerConfig;
 import dev.ftb.mods.ftbultimine.crops.CropLikeRegistry;
+import dev.ftb.mods.ftbultimine.crops.VanillaCropLikeHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface BlockMatchers {
@@ -20,7 +20,7 @@ public interface BlockMatchers {
             FTBUltimineServerConfig.MERGE_TAGS_SHAPED::match);
 
     ShapeContext.Matcher MATCH_BY_CROP_TYPE = BlockMatcher.wrap(
-            (original, state) -> state.getBlock() instanceof BushBlock
+            (original, state) -> VanillaCropLikeHandler.equivalentForSelection(original, state)
                     || CropLikeRegistry.getInstance().areStatesEquivalent(original, state));
 
     static ShapeContext.Matcher determineBestMatcher(Level level, BlockPos pos, BlockState origState, Shape shape) {
@@ -28,7 +28,7 @@ public interface BlockMatchers {
 
         if (tagMatcher.check(origState, origState)) {
             return tagMatcher;
-        } else if (CropLikeRegistry.getInstance().getHandlerFor(level, pos, origState).isPresent()) {
+        } else if (VanillaCropLikeHandler.looksLikeACrop(origState) || CropLikeRegistry.getInstance().getHandlerFor(level, pos, origState).isPresent()) {
             return BlockMatchers.MATCH_BY_CROP_TYPE;
         } else {
             return BlockMatchers.MATCH_BY_BLOCK;

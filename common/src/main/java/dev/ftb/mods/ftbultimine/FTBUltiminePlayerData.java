@@ -2,6 +2,8 @@ package dev.ftb.mods.ftbultimine;
 
 import dev.architectury.networking.NetworkManager;
 import dev.ftb.mods.ftbultimine.config.FTBUltimineServerConfig;
+import dev.ftb.mods.ftbultimine.crops.CropLikeRegistry;
+import dev.ftb.mods.ftbultimine.crops.VanillaCropLikeHandler;
 import dev.ftb.mods.ftbultimine.net.SendShapePacket;
 import dev.ftb.mods.ftbultimine.api.shape.Shape;
 import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
