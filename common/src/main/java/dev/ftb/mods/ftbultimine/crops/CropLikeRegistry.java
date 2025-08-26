@@ -40,13 +40,15 @@ public enum CropLikeRegistry implements RegisterCropLikeEvent.Dispatcher {
     }
 
     public static boolean checkForSingleCropHarvesting(Player player, BlockPos clickPos) {
-        BlockState state = player.level().getBlockState(clickPos);
-        var cropHandler = getInstance().getHandlerFor(player.level(), clickPos, state);
-        if (cropHandler.isPresent() && cropHandler.get().isApplicable(player.level(), clickPos, state)) {
-            ItemCollector collector = new ItemCollector();
-            if (cropHandler.get().doHarvesting(player, clickPos, state, collector)) {
-                collector.drop(player.level(), clickPos);
-                return true;
+        if (FTBUltimineServerConfig.SINGLE_CROP_HARVESTING.get()) {
+            BlockState state = player.level().getBlockState(clickPos);
+            var cropHandler = getInstance().getHandlerFor(player.level(), clickPos, state);
+            if (cropHandler.isPresent()) {
+                ItemCollector collector = new ItemCollector();
+                if (cropHandler.get().doHarvesting(player, clickPos, state, collector)) {
+                    collector.drop(player.level(), clickPos);
+                    return true;
+                }
             }
         }
         return false;

@@ -342,13 +342,18 @@ public class FTBUltimine {
 	}
 
 	public EventResult blockRightClick(Player player, InteractionHand hand, BlockPos clickPos, Direction face) {
+		if (PlayerHooks.isFake(player) && CropLikeRegistry.checkForSingleCropHarvesting(player, clickPos)) {
+			// minor kludge: we don't normally allow fake players for ultimining, but single crop harvesting is an exception
+			return EventResult.interruptTrue();
+		}
+
 		if (!(player instanceof ServerPlayer serverPlayer) || PlayerHooks.isFake(player) || player.getUUID() == null) {
 			return EventResult.pass();
 		}
 
 		FTBUltiminePlayerData data = getOrCreatePlayerData(player);
 		if (!data.isPressed()) {
-			if (FTBUltimineServerConfig.SINGLE_CROP_HARVESTING.get() && CropLikeRegistry.checkForSingleCropHarvesting(player, clickPos)) {
+			if (CropLikeRegistry.checkForSingleCropHarvesting(player, clickPos)) {
 				return EventResult.interruptTrue();
 			} else {
 				return EventResult.pass();
