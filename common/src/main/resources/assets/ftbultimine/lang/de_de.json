@@ -5,6 +5,13 @@
   "ftbultimine.info.base": "FTB Ultimine ist %s",
   "ftbultimine.info.active": "aktiv",
   "ftbultimine.info.not_active": "nicht aktiv",
+  "ftbultimine.info.no_valid_block": "Kein gültiger Block",
+  "ftbultimine.info.no_food": "Zu hungrig",
+  "ftbultimine.info.no_experience": "Nicht genug XP",
+  "ftbultimine.info.no_tool": "Kein gültiges Werkzeug",
+  "ftbultimine.info.no_permission": "Keine Berechtigung",
+  "ftbultimine.info.denied_tool": "Werkzeug ist nicht erlaubt",
+  "ftbultimine.info.other_restriction": "Andere Einschränkung",
   "ftbultimine.info.cooldown": "auf Abklingzeit",
   "ftbultimine.info.blocks": "Baue %d Blöcke ab",
   "ftbultimine.info.partial_render": "%d gerendert",
@@ -71,3 +78,4 @@
   "ftbultimine.server_settings.misc.cancel_on_block_break_fail": "Abbrechen bei Abbau-Fehler",
   "ftbultimine.server_settings.misc.cancel_on_block_break_fail.tooltip": "Erweiterte Einstellung: Stoppt den Abbau wenn unzerstörbare Blöcke angetroffen werden, statt sie zu überspringen."
 }
+
