@@ -53,6 +53,7 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 
 	private boolean pressed;
 	private boolean canUltimine;
+	private FTBUltimine.CanUltimineResult canUltimineStatus;
 	private List<BlockPos> shapeBlocks = Collections.emptyList();
 	private int actualBlocks = 0;
 	private List<CachedEdge> cachedEdges = null;
@@ -186,14 +187,19 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 		ImmutableList.Builder<IndentedLine> builder = ImmutableList.builder();
 
 		Component msg;
+		boolean isNotActive = false;
 		if (CooldownTracker.isOnCooldown(getClientPlayer())) {
 			msg = Component.translatable("ftbultimine.info.cooldown").withStyle(style -> style.withColor(TextColor.fromRgb(0xBFBF8C)));
 		} else if (canUltimine && actualBlocks > 0) {
 			msg = Component.translatable("ftbultimine.info.active").withStyle(style -> style.withColor(TextColor.fromRgb(0xA3BE8C)));
 		} else {
 			msg = Component.translatable("ftbultimine.info.not_active").withStyle(style -> style.withColor(TextColor.fromRgb(0xBF616A)));
+			isNotActive = true;
 		}
 		builder.add(new IndentedLine(0, Component.translatable("ftbultimine.info.base", msg)));
+		if (isNotActive) {
+			builder.add(new IndentedLine(0, Component.translatable(canUltimineStatus.getTranslationKey()).withStyle(style -> style.withColor(TextColor.fromRgb(0xBF616A)))));
+		}
 
 		ShapeRegistry shapeRegistry = ShapeRegistry.INSTANCE;
 		int context = Math.min((shapeRegistry.shapeCount() - 1) / 2, FTBUltimineClientConfig.SHAPE_MENU_CONTEXT_LINES.get());
@@ -306,8 +312,8 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 				mc.player.displayClientMessage(msg1, true);
 			}
 		}
-
-		canUltimine = pressed && FTBUltimine.instance.canUltimine(mc.player);
+		canUltimineStatus = FTBUltimine.instance.canUltimine(mc.player);
+		canUltimine = pressed && (canUltimineStatus.isAllowed());
 
 		if (pressed) {
 			infoPanelList = addPressedInfo();
