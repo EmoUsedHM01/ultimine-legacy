@@ -22,9 +22,7 @@ public record BlockMatcher(ShapeContext.Matcher wrapped) implements ShapeContext
 
 		private static boolean isEmptyBlockWhitelist() {
 			if (emptyBlockWhitelist == null) {
-				emptyBlockWhitelist = BuiltInRegistries.BLOCK.getTag(FTBUltimine.BLOCK_WHITELIST)
-						.map(holders -> holders.size() == 0)
-						.orElse(true);
+				emptyBlockWhitelist = !BuiltInRegistries.BLOCK.getTagOrEmpty(FTBUltimine.BLOCK_WHITELIST).iterator().hasNext();
 			}
 			return emptyBlockWhitelist;
 		}

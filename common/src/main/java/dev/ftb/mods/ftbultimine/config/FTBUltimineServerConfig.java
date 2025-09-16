@@ -4,8 +4,8 @@ import dev.architectury.utils.GameInstance;
 import dev.ftb.mods.ftblibrary.snbt.config.*;
 import dev.ftb.mods.ftblibrary.util.NetworkHelper;
 import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
-import dev.ftb.mods.ftbultimine.integration.ranks.FTBRanksIntegration;
 import dev.ftb.mods.ftbultimine.integration.IntegrationHandler;
+import dev.ftb.mods.ftbultimine.integration.ranks.FTBRanksIntegration;
 import dev.ftb.mods.ftbultimine.net.SyncUltimineTimePacket;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -155,8 +155,8 @@ public interface FTBUltimineServerConfig {
 						} else {
 							Pattern pattern = regexFromGlobString(s);
 							BuiltInRegistries.BLOCK.getTags().forEach((tag) -> {
-								if (pattern.asPredicate().test(tag.getFirst().location().toString())) {
-									tags.add(tag.getFirst());
+								if (pattern.asPredicate().test(tag.key().location().toString())) {
+									tags.add(tag.key());
 								}
 							});
 						}

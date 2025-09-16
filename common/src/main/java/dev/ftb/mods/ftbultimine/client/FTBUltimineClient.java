@@ -1,9 +1,7 @@
 package dev.ftb.mods.ftbultimine.client;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.architectury.event.EventResult;
@@ -127,8 +125,8 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 		VertexConsumer buffer = mc.renderBuffers().bufferSource().getBuffer(UltimineRenderTypes.LINES_NORMAL);
 
 		for (CachedEdge edge : cachedEdges) {
-			buffer.addVertex(matrix, edge.x1, edge.y1, edge.z1).setColor(255, 255, 255, 255);
-			buffer.addVertex(matrix, edge.x2, edge.y2, edge.z2).setColor(255, 255, 255, 255);
+			buffer.addVertex(matrix, edge.x1, edge.y1, edge.z1).setColor(255, 255, 255, 255).setNormal(edge.x2 - edge.x1, edge.y2 - edge.y1, edge.z2 - edge.z1);
+			buffer.addVertex(matrix, edge.x2, edge.y2, edge.z2).setColor(255, 255, 255, 255).setNormal(edge.x2 - edge.x1, edge.y2 - edge.y1, edge.z2 - edge.z1);
 		}
 
 		mc.renderBuffers().bufferSource().endBatch(UltimineRenderTypes.LINES_NORMAL);
@@ -137,8 +135,8 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 
 		int alpha = FTBUltimineClientConfig.PREVIEW_LINE_ALPHA.get();
 		for (CachedEdge edge : cachedEdges) {
-			buffer2.addVertex(matrix, edge.x1, edge.y1, edge.z1).setColor(255, 255, 255, alpha);
-			buffer2.addVertex(matrix, edge.x2, edge.y2, edge.z2).setColor(255, 255, 255, alpha);
+			buffer2.addVertex(matrix, edge.x1, edge.y1, edge.z1).setColor(255, 255, 255, alpha).setNormal(edge.x2 - edge.x1, edge.y2 - edge.y1, edge.z2 - edge.z1);
+			buffer2.addVertex(matrix, edge.x2, edge.y2, edge.z2).setColor(255, 255, 255, alpha).setNormal(edge.x2 - edge.x1, edge.y2 - edge.y1, edge.z2 - edge.z1);
 		}
 
 		mc.renderBuffers().bufferSource().endBatch(UltimineRenderTypes.LINES_TRANSPARENT);
@@ -246,8 +244,8 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 		if (pressed) {
 			Minecraft mc = Minecraft.getInstance();
 
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//			RenderSystem.enableBlend();
+//			RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
 			Font font = mc.font;
 			int width = Math.max(maxPanelWidth, 10 + infoPanelList.stream().map(l -> font.width(l.text)).max(Integer::compareTo).orElse(100));
@@ -263,9 +261,9 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 					insetX, insetY
 			);
 
-			graphics.pose().pushPose();
-			graphics.pose().translate(pos.x(), pos.y(), 100);
-			graphics.pose().scale(scale, scale, 1F);
+			graphics.pose().pushMatrix();
+			graphics.pose().translate(pos.x(), pos.y());
+			graphics.pose().scale(scale, scale);
 
 			// panel background
 			Color4I.DARK_GRAY.withAlpha(128).draw(graphics, -2, -2, width + 4, height + 4);
@@ -293,11 +291,11 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 			int top = 0;
 			for (IndentedLine line : infoPanelList) {
 				FormattedCharSequence formatted = line.text.getVisualOrderText();
-				graphics.drawString(font, formatted, line.indent, top, 0xECEFF4, true);
+				graphics.drawString(font, formatted, line.indent, top, 0xFFECEFF4, true);
 				top += font.lineHeight;
 			}
 
-			graphics.pose().popPose();
+			graphics.pose().popMatrix();
 		}
 	}
 

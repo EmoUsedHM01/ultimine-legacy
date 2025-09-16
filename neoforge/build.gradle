@@ -36,7 +36,8 @@ dependencies {
 
 	modApi("dev.ftb.mods:ftb-library-neoforge:${rootProject.ftb_library_version}") { transitive = false }
 	modApi("dev.ftb.mods:ftb-ranks-neoforge:${rootProject.ftb_ranks_version}") { transitive = false }
-	modApi("dev.ftb.mods:ftb-ez-crystals:${rootProject.ftb_ez_crystals_version}") { transitive = false }
+	// TODO Ez Crystals not on 1.21.8 yet
+	modCompileOnlyApi("dev.ftb.mods:ftb-ez-crystals:${rootProject.ftb_ez_crystals_version}") { transitive = false }
 
 	common(project(path: ":common", configuration: "dev")) { transitive false }
 	shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
