@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public final class ShapeMerger {
 	private static final Long2ObjectMap<Direction> BY_NORMAL = Arrays.stream(Direction.values())
 			.collect(Collectors.toMap(
-					dir -> new BlockPos(dir.getNormal()).asLong(),
+					dir -> new BlockPos(dir.getUnitVec3i()).asLong(),
 					dir -> dir,
 					(dir, dir2) -> {
 						throw new IllegalArgumentException("Duplicate keys");
@@ -126,7 +126,7 @@ public final class ShapeMerger {
 
 	public boolean mergeNeighbors(final Vec3 centerPoint, final AABB aabb) {
 		for (final Direction offsetDirection : Direction.values()) {
-			final Vec3 neighborCenter = centerPoint.add(Vec3.atLowerCornerOf(offsetDirection.getNormal()));
+			final Vec3 neighborCenter = centerPoint.add(Vec3.atLowerCornerOf(offsetDirection.getUnitVec3i()));
 			final Optional<AABB> potentialNeighborBox = getBoxFor(neighborCenter);
 
 			if (potentialNeighborBox.isPresent()) {

@@ -6,10 +6,8 @@ import net.neoforged.neoforge.common.NeoForge;
 
 class FTBUltimineNeoForgeClient {
     static void init() {
-        NeoForge.EVENT_BUS.<RenderLevelStageEvent>addListener(event -> {
-            if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
-                LevelRenderLastEvent.EVENT.invoker().onRenderLast(event.getPoseStack());
-            }
-        });
+        NeoForge.EVENT_BUS.<RenderLevelStageEvent.AfterTranslucentBlocks>addListener(event ->
+                LevelRenderLastEvent.EVENT.invoker().onRenderLast(event.getPoseStack())
+        );
     }
 }

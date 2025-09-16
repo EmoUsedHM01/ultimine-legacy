@@ -25,7 +25,7 @@ public class FTBUltimineAPI {
             return false;
         }
         FoodData data = player.getFoodData();
-        return data.getExhaustionLevel() / 4f > data.getSaturationLevel() + data.getFoodLevel();
+        return data.exhaustionLevel / 4f > data.getSaturationLevel() + data.getFoodLevel();
     }
 
     /**
