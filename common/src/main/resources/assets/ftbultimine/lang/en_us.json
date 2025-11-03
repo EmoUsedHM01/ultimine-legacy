@@ -34,6 +34,8 @@
 	"ftbultimine.client_settings.general": "General",
 	"ftbultimine.client_settings.general.require_ultimine_key_for_cycling": "Require Ultimine Key for Shape Cycling",
 	"ftbultimine.client_settings.general.require_ultimine_key_for_cycling.tooltip": "If true, the Ultimine key (` by default) must be held to cycle shapes via the keyboard (up/down cursor keys by default).\nIf false, shapes can be cycled at any time.",
+	"ftbultimine.client_settings.general.shape_feedback_hotbar_message": "Hotbar Message on Shape Change",
+	"ftbultimine.client_settings.general.shape_feedback_hotbar_message.tooltip": "If true, show a feedback message with the new shape on the hotbar when the Ultimining shape is changed",
 	"ftbultimine.client_settings.rendering": "Rendering",
 	"ftbultimine.client_settings.rendering.render_outline": "Max. Blocks to Render Outline for",
 	"ftbultimine.client_settings.rendering.preview_line_alpha": "Render Outline Alpha",

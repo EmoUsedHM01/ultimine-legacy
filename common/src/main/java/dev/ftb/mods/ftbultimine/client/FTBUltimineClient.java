@@ -12,6 +12,7 @@ import dev.architectury.networking.NetworkManager;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import dev.ftb.mods.ftblibrary.client.gui.GuiHelper;
 import dev.ftb.mods.ftblibrary.client.icon.Color4IRenderer;
+import dev.ftb.mods.ftblibrary.client.util.ClientUtils;
 import dev.ftb.mods.ftblibrary.icon.Color4I;
 import dev.ftb.mods.ftbultimine.CooldownTracker;
 import dev.ftb.mods.ftbultimine.FTBUltimine;
@@ -100,8 +101,8 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 			cachedEdges = null;
 			updateEdges();
 		}
-		if (!pressed) {
-			getClientPlayer().displayClientMessage(
+		if (!pressed && FTBUltimineClientConfig.SHAPE_FEEDBACK_MESSAGE.get()) {
+			ClientUtils.getClientPlayer().displayClientMessage(
 					Component.translatable("key.ftbultimine").append(" : ").append(ShapeRegistry.INSTANCE.getShape(shapeIdx).getDisplayName()),
 					true);
 		}

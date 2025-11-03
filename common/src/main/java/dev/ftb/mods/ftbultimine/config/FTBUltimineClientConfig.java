@@ -19,6 +19,8 @@ public interface FTBUltimineClientConfig {
 	Config GENERAL = CONFIG.addGroup("general");
 	BooleanValue REQUIRE_ULTIMINE_KEY_FOR_CYCLING = GENERAL.addBoolean("require_ultimine_key_for_cycling", true)
 			.comment("Does the player need to be holding the Ultimine key to cycle through shapes with the keyboard?");
+	BooleanValue SHAPE_FEEDBACK_MESSAGE = GENERAL.addBoolean("shape_feedback_hotbar_message", false)
+			.comment("When true, display the newly-selected shape as a hotbar message after an Ultimine shape change");
 
 	Config RENDERING = CONFIG.addGroup("rendering");
 	IntValue RENDER_OUTLINE = RENDERING.addInt("render_outline", 256)
