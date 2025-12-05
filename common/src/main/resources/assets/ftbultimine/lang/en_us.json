@@ -48,6 +48,8 @@
 	"ftbultimine.client_settings.overlay.overlay_inset_x.tooltip": "Inset is toward center of screen.\nIgnored if X pos is center.",
 	"ftbultimine.client_settings.overlay.overlay_inset_y": "Overlay Panel Y Inset",
 	"ftbultimine.client_settings.overlay.overlay_inset_y.tooltip": "Inset is toward center of screen.\nIgnored if Y pos is center.",
+	"ftbultimine.client_settings.overlay.overlay_scale": "Overlay Scaling",
+	"ftbultimine.client_settings.overlay.overlay_scale.tooltip": "Multiples of 0.25 are recommended for best font appearance",
 	"ftbultimine.server_settings": "Server Settings",
 	"ftbultimine.server_settings.features": "Features",
 	"ftbultimine.server_settings.features.right_click_axe": "Axe: Right-Click multiple blocks",

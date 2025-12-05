@@ -264,7 +264,7 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 			int width = Math.max(maxPanelWidth, 10 + infoPanelList.stream().map(l -> font.width(l.text)).max(Integer::compareTo).orElse(100));
 			maxPanelWidth = width;
 			int height = font.lineHeight * infoPanelList.size();
-			float scale = 1f;
+			float scale = FTBUltimineClientConfig.OVERLAY_SCALE.get().floatValue();
 
 			int insetX = FTBUltimineClientConfig.OVERLAY_INSET_X.get();
 			int insetY = FTBUltimineClientConfig.OVERLAY_INSET_Y.get();
@@ -349,17 +349,14 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 		}
 
 		cachedPos = shapeBlocks.getFirst();
-
-		double d = 0.005D;
-
 		cachedEdges = new ArrayList<>();
 
 		Collection<VoxelShape> shapes = new HashSet<>();
 		for (AABB aabb : ShapeMerger.merge(shapeBlocks, cachedPos)) {
-			shapes.add(Shapes.create(aabb.inflate(d)));
+			shapes.add(Shapes.create(aabb.inflate(0.005D)));
 		}
 
-		orShapes(shapes).forAllEdges((x1, y1, z1, x2, y2, z2) -> cachedEdges.add(CachedEdge.create(x1, y1, z1, x2, y2, z2)));
+		orShapes(shapes).forAllEdges((x1, y1, z1, x2, y2, z2) -> cachedEdges.add(CachedEdge.fromDoubles(x1, y1, z1, x2, y2, z2)));
 	}
 
 	static VoxelShape orShapes(Collection<VoxelShape> shapes) {
@@ -367,7 +364,7 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 		for (VoxelShape shape : shapes) {
 			combinedShape = Shapes.joinUnoptimized(combinedShape, shape, BooleanOp.OR);
 		}
-		return combinedShape;
+		return combinedShape.optimize();
 	}
 
 	private record IndentedLine(int indent, Component text) {
