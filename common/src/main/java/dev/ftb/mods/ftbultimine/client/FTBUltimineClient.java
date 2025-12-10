@@ -108,6 +108,11 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 		}
 	}
 
+	@Override
+	public Collection<BlockPos> getSelectedBlocks(Player player) {
+		return actualBlocks == 0 || shapeBlocks.isEmpty() ? null : shapeBlocks;
+	}
+
 	public void renderInGame(PoseStack stack) {
 		if (!pressed || cachedPos == null || cachedEdges == null || cachedEdges.isEmpty()) {
 			return;
