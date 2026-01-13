@@ -3,7 +3,7 @@ package dev.ftb.mods.ftbultimine.rightclick;
 import dev.ftb.mods.ftbultimine.FTBUltimine;
 import dev.ftb.mods.ftbultimine.api.rightclick.RightClickHandler;
 import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
-import dev.ftb.mods.ftbultimine.client.PlatformUtil;
+import dev.ftb.mods.ftbultimine.utils.PlatformUtil;
 import dev.ftb.mods.ftbultimine.config.FTBUltimineServerConfig;
 import dev.ftb.mods.ftbultimine.mixin.ShovelItemAccess;
 import net.minecraft.core.BlockPos;

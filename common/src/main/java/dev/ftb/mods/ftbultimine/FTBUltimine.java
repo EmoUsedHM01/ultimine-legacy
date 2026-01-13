@@ -8,6 +8,7 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.EnvExecutor;
 import dev.architectury.utils.value.IntValue;
 import dev.ftb.mods.ftblibrary.config.manager.ConfigManager;
+import dev.ftb.mods.ftblibrary.util.Lazy;
 import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
 import dev.ftb.mods.ftbultimine.api.blockbreaking.RegisterBlockBreakHandlerEvent;
 import dev.ftb.mods.ftbultimine.api.blockselection.RegisterBlockSelectionHandlerEvent;
@@ -61,25 +62,23 @@ import net.minecraft.world.phys.HitResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class FTBUltimine {
+	@Nullable
 	public static FTBUltimine instance;
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
 	public final FTBUltimineCommon proxy;
 
-	private Map<UUID, FTBUltiminePlayerData> cachedDataMap;
+	private final Map<UUID, FTBUltiminePlayerData> cachedDataMap = new HashMap<>();
 	private boolean isBreakingBlock;
 	private int tempBlockDroppedXp;
-	private ItemCollector tempBlockDropsList;
+	private final Lazy<ItemCollector> tempBlockDropsList = Lazy.of(ItemCollector::new);
 
 	public static final TagKey<Item> DENY_TAG = TagKey.create(Registries.ITEM, FTBUltimineAPI.id("excluded_tools"));
 	public static final TagKey<Item> STRICT_DENY_TAG = TagKey.create(Registries.ITEM, FTBUltimineAPI.id("excluded_tools/strict"));
@@ -128,6 +127,10 @@ public class FTBUltimine {
 		RegisterCropLikeEvent.REGISTER.register(this::registerCropHandlers);
 	}
 
+	public static FTBUltimine getInstance() {
+		return Objects.requireNonNull(instance);
+	}
+
 	private void commonSetup() {
 		RegisterRestrictionHandlerEvent.REGISTER.invoker().register(RestrictionHandlerRegistry.INSTANCE);
 		RegisterShapeEvent.REGISTER.invoker().register(ShapeRegistry.INSTANCE);
@@ -163,7 +166,6 @@ public class FTBUltimine {
 	}
 
 	private void serverStarting(MinecraftServer server) {
-		cachedDataMap = new HashMap<>();
 		RegisterRightClickHandlerEvent.REGISTER.invoker().register(RightClickDispatcher.getInstance());
 		RegisterCropLikeEvent.REGISTER.invoker().register(CropLikeRegistry.getInstance());
 		RegisterBlockBreakHandlerEvent.REGISTER.invoker().register(BlockBreakingRegistry.getInstance());
@@ -171,6 +173,7 @@ public class FTBUltimine {
 	}
 
 	private void serverStopping(MinecraftServer server) {
+		cachedDataMap.clear();
 		RightClickDispatcher.getInstance().clear();
 		CropLikeRegistry.getInstance().clear();
 		BlockBreakingRegistry.getInstance().clear();
@@ -228,8 +231,8 @@ public class FTBUltimine {
 	 * @param player Player to check status for
 	 * @return Result object with the reason that ultimine is not allowed.
 	 */
-	public CanUltimineResult canUltimine(Player player) {
-		if (PlayerHooks.isFake(player) || player.getUUID() == null) {
+	public CanUltimineResult canUltimine(@Nullable Player player) {
+		if (player == null || PlayerHooks.isFake(player)) {
 			return CanUltimineResult.OTHER_RESTRICTION;
 		}
 
@@ -263,8 +266,8 @@ public class FTBUltimine {
 		if (isBreakingBlock || !canUltimine(player).isAllowed()) {
 			return EventResult.pass();
 		}
-		FTBUltiminePlayerData data = getOrCreatePlayerData(player);
 
+		FTBUltiminePlayerData data = getOrCreatePlayerData(player);
 		if (!data.isPressed()) {
 			return EventResult.pass();
 		}
@@ -281,19 +284,19 @@ public class FTBUltimine {
 			return EventResult.pass();
 		}
 
-		if (player.totalExperience < data.cachedPositions().size() * FTBUltimineServerConfig.getExperiencePerBlock(player)) {
+		if (player.totalExperience < Objects.requireNonNull(data.cachedPositions()).size() * FTBUltimineServerConfig.getExperiencePerBlock(player)) {
 			return EventResult.pass();
 		}
 
 		isBreakingBlock = true;
-		tempBlockDropsList = new ItemCollector();
+		tempBlockDropsList.get().clear();
 		tempBlockDroppedXp = 0;
 		boolean hadItem = !player.getMainHandItem().isEmpty();
 
 		Shape shape = data.getCurrentShape();
 		float baseSpeed = state.getDestroySpeed(world, origPos);
 		int blocksMined = 0;
-		for (BlockPos pos : data.cachedPositions()) {
+		for (BlockPos pos : Objects.requireNonNull(data.cachedPositions())) {
 			BlockState state1 = world.getBlockState(pos);
 
 			if (AcceleratedDecay.available && state1.is(BlockTags.LEAVES) && LogBreakTracker.INSTANCE.playerRecentlyBrokeLog(player, 1500L)) {
@@ -341,7 +344,7 @@ public class FTBUltimine {
 
 		isBreakingBlock = false;
 
-		tempBlockDropsList.drop(player.level(), origPos);
+		tempBlockDropsList.get().drop(player.level(), origPos);
 
 		if (tempBlockDroppedXp > 0) {
 			player.level().addFreshEntity(new ExperienceOrb(player.level(), origPos.getX() + 0.5D, origPos.getY() + 0.5D, origPos.getZ() + 0.5D, tempBlockDroppedXp));
@@ -369,7 +372,7 @@ public class FTBUltimine {
 			return InteractionResult.SUCCESS_SERVER;
 		}
 
-		if (!(player instanceof ServerPlayer serverPlayer) || PlayerHooks.isFake(player) || player.getUUID() == null) {
+		if (!(player instanceof ServerPlayer serverPlayer) || PlayerHooks.isFake(player)) {
 			return InteractionResult.PASS;
 		}
 
@@ -426,7 +429,7 @@ public class FTBUltimine {
 		if (entity.isAlive() && level instanceof ServerLevel serverLevel) {
 			if (isBreakingBlock && entity instanceof ItemEntity item) {
 				if (!item.getItem().isEmpty()) {
-					tempBlockDropsList.add(item.getItem());
+					tempBlockDropsList.get().add(item.getItem());
 					item.setItem(ItemStack.EMPTY);
 				}
 				return EventResult.interruptFalse();

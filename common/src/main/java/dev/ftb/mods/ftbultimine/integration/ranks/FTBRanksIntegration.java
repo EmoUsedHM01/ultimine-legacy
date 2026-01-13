@@ -26,7 +26,7 @@ public class FTBRanksIntegration {
     }
 
     private static void updatePlayer(RankEvent.Player event) {
-        ServerPlayer sp = event.getManager().getServer().getPlayerList().getPlayer(event.getPlayer().getId());
+        ServerPlayer sp = event.getManager().getServer().getPlayerList().getPlayer(event.getPlayer().id());
         if (sp != null) {
             NetworkManager.sendToPlayer(sp, new SyncUltimineTimePacket(FTBUltimineServerConfig.getUltimineCooldown(sp), TimeType.COOLDOWN));
         }

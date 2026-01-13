@@ -3,7 +3,7 @@ package dev.ftb.mods.ftbultimine.api.shape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public interface Shape {
 	/**
 	 * {@return a unique identifier for this shape, in your mod's namespace}
 	 */
-	ResourceLocation getName();
+	Identifier getName();
 
 	/**
 	 * Compute the actual blocks which should be broken in this ultimining operation.

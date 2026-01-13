@@ -26,11 +26,6 @@ public record ShapeContext(ServerPlayer player, BlockPos origPos, Direction face
 		return player.level().getBlockState(pos);
 	}
 
-	@Deprecated
-	BlockPos pos() {
-		return origPos;
-	}
-
 	/**
 	 * Called by implementations of {@link Shape} to check if a particular block position should be part of an
 	 * ultimining operation.

@@ -2,7 +2,7 @@ package dev.ftb.mods.ftbultimine.api;
 
 import dev.ftb.mods.ftbultimine.api.blockselection.BlockSelectionHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
@@ -33,8 +33,8 @@ public class FTBUltimineAPI {
      * @param path the path
      * @return the resource location
      */
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     /**

@@ -1,7 +1,7 @@
 package dev.ftb.mods.ftbultimine.config;
 
 import dev.architectury.utils.GameInstance;
-import dev.ftb.mods.ftblibrary.snbt.config.*;
+import dev.ftb.mods.ftblibrary.config.value.*;
 import dev.ftb.mods.ftblibrary.util.NetworkHelper;
 import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
 import dev.ftb.mods.ftbultimine.integration.IntegrationHandler;
@@ -9,7 +9,7 @@ import dev.ftb.mods.ftbultimine.integration.ranks.FTBRanksIntegration;
 import dev.ftb.mods.ftbultimine.net.SyncUltimineTimePacket;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -25,7 +25,7 @@ import static dev.ftb.mods.ftbultimine.FTBUltimine.LOGGER;
 public interface FTBUltimineServerConfig {
 	String KEY = FTBUltimineAPI.MOD_ID + "-server";
 
-	SNBTConfig CONFIG = SNBTConfig.create(KEY)
+	Config CONFIG = Config.create(KEY)
 			.comment("Server-specific configuration for FTB Ultimine",
 					"Modpack defaults should be defined in <instance>/config/" + KEY + ".snbt",
 					"  (may be overwritten on modpack update)",
@@ -33,7 +33,7 @@ public interface FTBUltimineServerConfig {
 					"  (will NOT be overwritten on modpack update)"
 			);
 
-	SNBTConfig FEATURES = CONFIG.addGroup("features");
+	Config FEATURES = CONFIG.addGroup("features");
 
 	BooleanValue RIGHT_CLICK_AXE = FEATURES.addBoolean("right_click_axe", true)
 			.comment("Right-click with an axe with the Ultimine key held to strip multiple logs and scrape/unwax copper blocks");
@@ -49,7 +49,7 @@ public interface FTBUltimineServerConfig {
 	BooleanValue SINGLE_CROP_HARVESTING = FEATURES.addBoolean("single_crop_harvesting", true)
 			.comment("When true, right-clicking a crop block without the Ultimine key held harvests it");
 
-	SNBTConfig COSTS_LIMITS = CONFIG.addGroup("costs_limits");
+	Config COSTS_LIMITS = CONFIG.addGroup("costs_limits");
 
 	IntValue MAX_BLOCKS = COSTS_LIMITS.addInt("max_blocks", 64)
 			.range(32768)
@@ -65,7 +65,7 @@ public interface FTBUltimineServerConfig {
 	LongValue ULTIMINE_COOLDOWN = COSTS_LIMITS.addLong("ultimine_cooldown", 0L, 0L, Long.MAX_VALUE)
 			.comment("Cooldown in ticks between successive uses of the Ultimine feature");
 
-	SNBTConfig MISC = CONFIG.addGroup("misc");
+	Config MISC = CONFIG.addGroup("misc");
 	BlockTagsConfig MERGE_TAGS_SHAPELESS = new BlockTagsConfig(MISC, "merge_tags",
 			new ArrayList<>(List.of(
 					"minecraft:base_stone_overworld",
@@ -130,7 +130,7 @@ public interface FTBUltimineServerConfig {
 		private Set<TagKey<Block>> tags = null;
 		private boolean matchAny = false;
 
-		public BlockTagsConfig(SNBTConfig parent, String name, List<String> defaults, String... comment) {
+		public BlockTagsConfig(Config parent, String name, List<String> defaults, String... comment) {
 			this.value = parent.addStringList(name, defaults).comment(comment);
 		}
 
@@ -149,7 +149,7 @@ public interface FTBUltimineServerConfig {
 				} else {
 					tags = new HashSet<>();
 					value.get().forEach(s -> {
-						ResourceLocation rl = ResourceLocation.tryParse(s);
+						Identifier rl = Identifier.tryParse(s);
 						if (rl != null) {
 							tags.add(TagKey.create(Registries.BLOCK, rl));
 						} else {

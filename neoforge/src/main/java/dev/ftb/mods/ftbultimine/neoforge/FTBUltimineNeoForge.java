@@ -14,9 +14,5 @@ public class FTBUltimineNeoForge {
 //		}
 
 		new FTBUltimine();
-
-		if (FMLEnvironment.dist == Dist.CLIENT) {
-			FTBUltimineNeoForgeClient.init();
-		}
 	}
 }

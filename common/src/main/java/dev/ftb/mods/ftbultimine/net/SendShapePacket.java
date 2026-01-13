@@ -36,7 +36,9 @@ public record SendShapePacket(int shapeIdx, Optional<List<BlockPos>> blocks) imp
 
 	public static void handle(SendShapePacket message, NetworkManager.PacketContext context) {
 		context.queue(() -> {
-			FTBUltimine.instance.proxy.setShape(message.shapeIdx, message.blocks.orElse(null));
-		});
+            if (FTBUltimine.instance != null) {
+                FTBUltimine.instance.proxy.setShape(message.shapeIdx, message.blocks.orElse(null));
+            }
+        });
 	}
 }

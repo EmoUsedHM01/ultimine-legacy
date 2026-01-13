@@ -1,12 +1,10 @@
 package dev.ftb.mods.ftbultimine;
 
 import dev.architectury.networking.NetworkManager;
-import dev.ftb.mods.ftbultimine.config.FTBUltimineServerConfig;
-import dev.ftb.mods.ftbultimine.crops.CropLikeRegistry;
-import dev.ftb.mods.ftbultimine.crops.VanillaCropLikeHandler;
-import dev.ftb.mods.ftbultimine.net.SendShapePacket;
 import dev.ftb.mods.ftbultimine.api.shape.Shape;
 import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
+import dev.ftb.mods.ftbultimine.config.FTBUltimineServerConfig;
+import dev.ftb.mods.ftbultimine.net.SendShapePacket;
 import dev.ftb.mods.ftbultimine.shape.BlockMatchers;
 import dev.ftb.mods.ftbultimine.shape.ShapeRegistry;
 import net.minecraft.commands.CommandSourceStack;
@@ -17,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,8 +31,11 @@ public class FTBUltiminePlayerData {
 	private int shapeIndex = 0;
 	private double pendingXPCost;
 
+	@Nullable
 	private BlockPos cachedPos;
+	@Nullable
 	private Direction cachedDirection;
+	@Nullable
 	private List<BlockPos> cachedBlocks;
 
 	public FTBUltiminePlayerData(UUID playerId) {
@@ -63,6 +64,7 @@ public class FTBUltiminePlayerData {
 		return cachedBlocks != null && !cachedBlocks.isEmpty();
 	}
 
+	@Nullable
 	public Collection<BlockPos> cachedPositions() {
 		return cachedBlocks;
 	}
@@ -103,7 +105,7 @@ public class FTBUltiminePlayerData {
 
 			String cmd = String.format("experience add @s -%d points", toTake);
 			CommandSourceStack source = player.createCommandSourceStack().withSuppressedOutput();
-			player.getServer().getCommands().performPrefixedCommand(source, cmd);
+			player.level().getServer().getCommands().performPrefixedCommand(source, cmd);
 			pendingXPCost -= toTake;
 		}
 	}
