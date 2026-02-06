@@ -33,9 +33,9 @@ public class FTBRanksIntegration {
     }
 
     private static void updateAllPlayers(RankEvent event) {
-        event.getManager().getServer().getPlayerList().getPlayers().forEach(sp -> {
-            NetworkManager.sendToPlayer(sp, new SyncUltimineTimePacket(FTBUltimineServerConfig.getUltimineCooldown(sp), TimeType.COOLDOWN));
-        });
+        event.getManager().getServer().getPlayerList().getPlayers().forEach(sp ->
+                NetworkManager.sendToPlayer(sp, new SyncUltimineTimePacket(FTBUltimineServerConfig.getUltimineCooldown(sp), TimeType.COOLDOWN))
+        );
     }
 
     public static int getMaxBlocks(ServerPlayer player, int defMax) {

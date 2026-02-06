@@ -1,8 +1,8 @@
 package dev.ftb.mods.ftbultimine.shape;
 
+import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
 import dev.ftb.mods.ftbultimine.api.shape.Shape;
 import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
-import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 

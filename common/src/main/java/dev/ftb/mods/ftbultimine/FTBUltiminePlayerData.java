@@ -53,7 +53,8 @@ public class FTBUltiminePlayerData {
 		return playerId;
 	}
 
-	public boolean isPressed() {
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isPressed() {
 		return pressed;
 	}
 
@@ -61,6 +62,7 @@ public class FTBUltiminePlayerData {
 		this.pressed = pressed;
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean hasCachedPositions() {
 		return cachedBlocks != null && !cachedBlocks.isEmpty();
 	}

@@ -1,10 +1,10 @@
 package dev.ftb.mods.ftbultimine.crops;
 
-import dev.ftb.mods.ftbultimine.FTBUltimine;
+import dev.ftb.mods.ftbultimine.api.FTBUltimineTags;
 import dev.ftb.mods.ftbultimine.api.crop.CropLikeHandler;
 import dev.ftb.mods.ftbultimine.api.crop.RegisterCropLikeEvent;
-import dev.ftb.mods.ftbultimine.api.util.ItemCollector;
 import dev.ftb.mods.ftbultimine.config.FTBUltimineServerConfig;
+import dev.ftb.mods.ftbultimine.utils.ItemCollector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -43,7 +43,7 @@ public enum CropLikeRegistry implements RegisterCropLikeEvent.Dispatcher {
     public static boolean checkForSingleCropHarvesting(Player player, BlockPos clickPos) {
         if (FTBUltimineServerConfig.SINGLE_CROP_HARVESTING.get()) {
             BlockState state = player.level().getBlockState(clickPos);
-            if (state.is(FTBUltimine.SINGLE_CROP_HARVESTING_BLACKLIST)) {
+            if (state.is(FTBUltimineTags.Blocks.SINGLE_CROP_HARVESTING_BLACKLIST)) {
                 return false;
             }
             var cropHandler = getInstance().getHandlerFor(player.level(), clickPos, state);

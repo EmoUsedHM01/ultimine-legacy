@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,7 +39,9 @@ public final class ShapeMerger {
 	private double regionBuildingAxis = Double.NEGATIVE_INFINITY;
 	private double faceBuildingAxis = Double.NEGATIVE_INFINITY;
 
+	@Nullable
 	private Vec3 lastCenterPoint = null;
+	@Nullable
 	private AABB currentBox;
 
 	private final Map<Vec3, AABB> boxAssignments = Maps.newHashMap();
@@ -60,13 +63,14 @@ public final class ShapeMerger {
 		this.faceBuildingAxis = faceBuildingAxis;
 	}
 
+	@Nullable
 	public AABB getCurrentBox() {
 		return currentBox;
 	}
 
-	public void setCurrentBox(final AABB currentBox, final Vec3 centerPoint) {
+	public void setCurrentBox(@Nullable final AABB currentBox, @Nullable final Vec3 centerPoint) {
 		this.currentBox = currentBox;
-		if (currentBox != null) {
+		if (currentBox != null && centerPoint != null) {
 			boxAssignments.put(centerPoint, currentBox);
 			mergerAssignments.put(currentBox, centerPoint);
 		}

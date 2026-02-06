@@ -1,8 +1,8 @@
 package dev.ftb.mods.ftbultimine;
 
 import net.minecraft.core.BlockPos;
-import org.jspecify.annotations.Nullable;
 import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +13,6 @@ public class FTBUltimineCommon {
 
 	@Nullable
 	public Collection<BlockPos> getSelectedBlocks(Player player) {
-		return FTBUltimine.instance.getOrCreatePlayerData(player).cachedPositions();
+		return FTBUltimine.getInstance().getOrCreatePlayerData(player).cachedPositions();
 	}
 }

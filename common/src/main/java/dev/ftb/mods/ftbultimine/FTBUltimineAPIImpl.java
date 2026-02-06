@@ -2,7 +2,6 @@ package dev.ftb.mods.ftbultimine;
 
 import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
 import dev.ftb.mods.ftbultimine.api.blockselection.BlockSelectionHandler;
-import dev.ftb.mods.ftbultimine.client.FTBUltimineClient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,7 +14,7 @@ public enum FTBUltimineAPIImpl implements FTBUltimineAPI.API {
 
     @Override
     public Optional<Collection<BlockPos>> currentBlockSelection(Player player) {
-        return Optional.ofNullable(FTBUltimine.instance.proxy.getSelectedBlocks(player));
+        return Optional.ofNullable(FTBUltimine.getInstance().proxy.getSelectedBlocks(player));
     }
 
     @Override

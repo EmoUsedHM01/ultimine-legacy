@@ -48,6 +48,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -58,10 +59,12 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 
 	private boolean pressed;
 	private boolean canUltimine;
-	private CanUltimineResult canUltimineStatus;
+	private CanUltimineResult canUltimineStatus = CanUltimineResult.ALLOWED;
 	private List<BlockPos> shapeBlocks = Collections.emptyList();
 	private int actualBlocks = 0;
+	@Nullable
 	private List<CachedEdge> cachedEdges = null;
+	@Nullable
 	private BlockPos cachedPos = null;
 	public boolean hasScrolledYet = false;
 	private long lastToggle = 0;
@@ -92,7 +95,7 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 	}
 
 	@Override
-	public void setShape(int shapeIdx, List<BlockPos> blocks) {
+	public void setShape(int shapeIdx, @Nullable List<BlockPos> blocks) {
 		this.shapeIdx = shapeIdx;
 		if (blocks != null) {
 			actualBlocks = blocks.size();
@@ -109,6 +112,7 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 	}
 
 	@Override
+	@Nullable
 	public Collection<BlockPos> getSelectedBlocks(Player player) {
 		return actualBlocks == 0 || shapeBlocks.isEmpty() ? null : shapeBlocks;
 	}
@@ -320,7 +324,7 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 	}
 
 	public void clientTick(Minecraft mc) {
-		if (Minecraft.getInstance().player == null) {
+		if (mc.player == null) {
 			return;
 		}
 
@@ -336,7 +340,7 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 			}
 		}
 		canUltimineStatus = mc.hitResult instanceof BlockHitResult b && b.getType() == HitResult.Type.BLOCK ?
-				FTBUltimine.instance.canUltimine(mc.player, b.getBlockPos(), mc.player.level().getBlockState(b.getBlockPos())) :
+				FTBUltimine.getInstance().canUltimine(mc.player, b.getBlockPos(), mc.player.level().getBlockState(b.getBlockPos())) :
 				CanUltimineResult.NO_BLOCK_TARGETED;
 		canUltimine = pressed && (canUltimineStatus.isAllowed());
 

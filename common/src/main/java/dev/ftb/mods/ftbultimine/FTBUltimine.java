@@ -10,6 +10,7 @@ import dev.architectury.utils.value.IntValue;
 import dev.ftb.mods.ftblibrary.config.manager.ConfigManager;
 import dev.ftb.mods.ftblibrary.util.Lazy;
 import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
+import dev.ftb.mods.ftbultimine.api.FTBUltimineTags;
 import dev.ftb.mods.ftbultimine.api.blockbreaking.RegisterBlockBreakHandlerEvent;
 import dev.ftb.mods.ftbultimine.api.blockselection.RegisterBlockSelectionHandlerEvent;
 import dev.ftb.mods.ftbultimine.api.crop.RegisterCropLikeEvent;
@@ -19,7 +20,6 @@ import dev.ftb.mods.ftbultimine.api.shape.RegisterShapeEvent;
 import dev.ftb.mods.ftbultimine.api.shape.Shape;
 import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
 import dev.ftb.mods.ftbultimine.api.util.CanUltimineResult;
-import dev.ftb.mods.ftbultimine.api.util.ItemCollector;
 import dev.ftb.mods.ftbultimine.client.FTBUltimineClient;
 import dev.ftb.mods.ftbultimine.config.FTBUltimineClientConfig;
 import dev.ftb.mods.ftbultimine.config.FTBUltimineServerConfig;
@@ -32,14 +32,14 @@ import dev.ftb.mods.ftbultimine.net.FTBUltimineNet;
 import dev.ftb.mods.ftbultimine.net.SendShapePacket;
 import dev.ftb.mods.ftbultimine.net.SyncUltimineTimePacket;
 import dev.ftb.mods.ftbultimine.net.SyncUltimineTimePacket.TimeType;
-import dev.ftb.mods.ftbultimine.rightclick.*;
 import dev.ftb.mods.ftbultimine.registry.ModAttributes;
+import dev.ftb.mods.ftbultimine.rightclick.*;
 import dev.ftb.mods.ftbultimine.shape.*;
+import dev.ftb.mods.ftbultimine.utils.ItemCollector;
 import dev.ftb.mods.ftbultimine.utils.PlatformUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,17 +47,14 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -67,11 +64,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class FTBUltimine {
 	@Nullable
-	public static FTBUltimine instance;
+	private static FTBUltimine instance;
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
@@ -81,22 +77,6 @@ public class FTBUltimine {
 	private boolean isBreakingBlock;
 	private int tempBlockDroppedXp;
 	private final Lazy<ItemCollector> tempBlockDropsList = Lazy.of(ItemCollector::new);
-
-	public static final TagKey<Item> DENY_TAG = TagKey.create(Registries.ITEM, FTBUltimineAPI.id("excluded_tools"));
-	public static final TagKey<Item> STRICT_DENY_TAG = TagKey.create(Registries.ITEM, FTBUltimineAPI.id("excluded_tools/strict"));
-	public static final TagKey<Item> ALLOW_TAG = TagKey.create(Registries.ITEM, FTBUltimineAPI.id("included_tools"));
-
-	public static final TagKey<Block> EXCLUDED_BLOCKS = TagKey.create(Registries.BLOCK, FTBUltimineAPI.id("excluded_blocks"));
-	public static final TagKey<Block> BLOCK_WHITELIST = TagKey.create(Registries.BLOCK, FTBUltimineAPI.id("block_whitelist"));
-	public static final TagKey<Block> TILLABLE_TAG = TagKey.create(Registries.BLOCK, FTBUltimineAPI.id("farmland_tillable"));
-	public static final TagKey<Block> FLATTENABLE_TAG = TagKey.create(Registries.BLOCK, FTBUltimineAPI.id("shovel_flattenable"));
-	public static final TagKey<Block> SINGLE_CROP_HARVESTING_BLACKLIST = TagKey.create(Registries.BLOCK, FTBUltimineAPI.id("single_crop_harvesting_blacklist"));
-
-	private static Predicate<Player> permissionOverride = player -> true;
-
-	public static void setPermissionOverride(Predicate<Player> p) {
-		permissionOverride = p;
-	}
 
 	public FTBUltimine() {
 		instance = this;
@@ -216,7 +196,7 @@ public class FTBUltimine {
 		ItemStack mainHand = player.getMainHandItem();
 
 		boolean hasAnyTool = !FTBUltimineServerConfig.REQUIRE_TOOL.get()
-				|| !mainHand.isEmpty() && (mainHand.has(DataComponents.TOOL) || mainHand.getMaxDamage() > 0 || mainHand.is(ALLOW_TAG));
+				|| !mainHand.isEmpty() && (mainHand.has(DataComponents.TOOL) || mainHand.getMaxDamage() > 0 || mainHand.is(FTBUltimineTags.Items.ALLOW_TAG));
 		if (!hasAnyTool) {
 			return false;
 		}
@@ -239,7 +219,7 @@ public class FTBUltimine {
 	 * @return Result object with the reason that ultimine is not allowed.
 	 */
 	public CanUltimineResult canUltimine(Player player, BlockPos pos, BlockState state) {
-		if (PlayerHooks.isFake(player) || player.getUUID() == null) {
+		if (PlayerHooks.isFake(player)) {
 			return CanUltimineResult.OTHER_RESTRICTION;
 		}
 
@@ -251,14 +231,10 @@ public class FTBUltimine {
 			return CanUltimineResult.NO_FOOD;
 		}
 
-		if (!permissionOverride.test(player)) {
-			return CanUltimineResult.NO_PERMISSION;
-		}
-
 		var mainHand = player.getMainHandItem();
 		var offHand = player.getOffhandItem();
 		/* Check if the current tool has a deny tag. strict deny applies to either hand. */
-		if (mainHand.is(STRICT_DENY_TAG) || offHand.is(STRICT_DENY_TAG) || mainHand.is(DENY_TAG)) {
+		if (mainHand.is(FTBUltimineTags.Items.STRICT_DENY_TAG) || offHand.is(FTBUltimineTags.Items.STRICT_DENY_TAG) || mainHand.is(FTBUltimineTags.Items.DENY_TAG)) {
 			return CanUltimineResult.BLOCKED_TOOL;
 		}
 
@@ -313,7 +289,6 @@ public class FTBUltimine {
 			}
 
 			float destroySpeed = state1.getDestroySpeed(world, pos);
-            //noinspection ConstantValue
             if (!player.isCreative() && (destroySpeed < 0 || destroySpeed > baseSpeed || !isValidTool(player, pos, state1))) {
 				continue;
 			}

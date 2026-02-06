@@ -1,6 +1,5 @@
 package dev.ftb.mods.ftbultimine.crops;
 
-import dev.ftb.mods.ftbultimine.api.util.ItemCollector;
 import dev.ftb.mods.ftbultimine.api.crop.CropLikeHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -12,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public enum VanillaCropLikeHandler implements CropLikeHandler {
     INSTANCE;
@@ -34,7 +34,7 @@ public enum VanillaCropLikeHandler implements CropLikeHandler {
     }
 
     @Override
-    public boolean doHarvesting(Player player, BlockPos pos, BlockState state, ItemCollector itemCollector) {
+    public boolean doHarvesting(Player player, BlockPos pos, BlockState state, Consumer<ItemStack> itemCollector) {
         BlockEntity blockEntity = state.hasBlockEntity() ? player.level().getBlockEntity(pos) : null;
         List<ItemStack> drops = Block.getDrops(state, (ServerLevel) player.level(), pos, blockEntity, player, ItemStack.EMPTY);
 
@@ -43,7 +43,7 @@ public enum VanillaCropLikeHandler implements CropLikeHandler {
             if (Block.byItem(stack.getItem()) == state.getBlock() && consumesItemToReplant(state)) {
                 stack.shrink(1);
             }
-            itemCollector.add(stack);
+            itemCollector.accept(stack);
         }
 
         resetAge(player.level(), pos, state);
