@@ -2,10 +2,13 @@ package dev.ftb.mods.ftbultimine.client.neoforge;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.input.KeyEvent;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+// arch expect
+@SuppressWarnings("unused")
 public class ClientPlatformUtilImpl {
-    public static boolean doesKeybindMatch(KeyMapping keyMapping, KeyEvent event) {
+    public static boolean doesKeybindMatch(@Nullable KeyMapping keyMapping, KeyEvent event) {
         if (keyMapping.matches(event)) {
             return switch (keyMapping.getKeyModifier()) {
                 case NONE -> event.modifiers() == 0;

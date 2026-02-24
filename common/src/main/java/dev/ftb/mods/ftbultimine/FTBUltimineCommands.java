@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.permissions.Permissions;
 
 public class FTBUltimineCommands {
-    public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registry, Commands.CommandSelection selection) {
+    public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext ignoredCtx, Commands.CommandSelection ignoredSel) {
         dispatcher.register(Commands.literal("ftbultimine")
                 .then(Commands.literal("serverconfig")
                         .requires(sourceStack -> sourceStack.isPlayer() && sourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))

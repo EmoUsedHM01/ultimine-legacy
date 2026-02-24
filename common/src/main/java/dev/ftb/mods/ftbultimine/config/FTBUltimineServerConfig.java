@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -46,7 +47,7 @@ public interface FTBUltimineServerConfig {
 			.comment("Right-click with a hoe with the Ultimine key held to till multiple grass/dirt blocks into farmland");
 	BooleanValue RIGHT_CLICK_HARVESTING = FEATURES.addBoolean("right_click_harvesting", true)
 			.comment("Right-click crops with the Ultimine key held to harvest multiple crop blocks");
-	BooleanValue RIGHT_CLICK_CRYSTALS = (BooleanValue)FEATURES.addBoolean("right_click_crystals", true)
+	BooleanValue RIGHT_CLICK_CRYSTALS = FEATURES.addBoolean("right_click_crystals", true)
 			.comment("Right-click budding crystals (e.g. amethyst, AE2 certus) with the Ultimine key held to harvest multiple crystals",
 					"FTB EZ Crystals must also be installed");
 	BooleanValue SINGLE_CROP_HARVESTING = FEATURES.addBoolean("single_crop_harvesting", true)
@@ -92,11 +93,6 @@ public interface FTBUltimineServerConfig {
 
 	BooleanValue CANCEL_ON_BLOCK_BREAK_FAIL = MISC.addBoolean("cancel_on_block_break_fail", false)
 			.comment("If a block couldn't be broken (even though it should be), stop ultimining immediately instead of skipping to the next block.");
-
-//	BooleanValue USE_TRINKET = CONFIG.addBoolean("use_trinket", false)
-//			.comment("(This only works if the mod 'Lost Trinkets' is installed!)",
-//					"Adds a custom 'Ultiminer' trinket players will need to activate to be able to use Ultimine.",
-//					"Make sure you disable the 'Octopick' trinket if this is enabled!");
 
 	/*********************************************************************/
 
@@ -144,6 +140,7 @@ public interface FTBUltimineServerConfig {
 	class BlockTagsConfig {
 		private final StringListValue value;
 
+		@Nullable
 		private Set<TagKey<Block>> tags = null;
 		private boolean matchAny = false;
 

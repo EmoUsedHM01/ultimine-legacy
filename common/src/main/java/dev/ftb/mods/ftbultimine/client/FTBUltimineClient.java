@@ -53,8 +53,11 @@ import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 public class FTBUltimineClient extends FTBUltimineCommon {
+	@Nullable
 	public static KeyMapping keyBindUltimine;
+	@Nullable
 	public static KeyMapping keyBindNextMode;
+	@Nullable
 	public static KeyMapping keyBindPrevMode;
 
 	private boolean pressed;
@@ -194,18 +197,20 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 			return EventResult.pass();
 		}
 
-        if ((pressed || !FTBUltimineClientConfig.REQUIRE_ULTIMINE_KEY_FOR_CYCLING.get()) && isMenuSneaking()) {
-            NetworkManager.sendToServer(new ModeChangedPacket(nextMode));
-            lastToggle = System.currentTimeMillis();
-            hasScrolledYet = true;
-        }
-        return EventResult.pass();
-    }
+		if ((pressed || !FTBUltimineClientConfig.REQUIRE_ULTIMINE_KEY_FOR_CYCLING.get()) && isMenuSneaking()) {
+			NetworkManager.sendToServer(new ModeChangedPacket(nextMode));
+			lastToggle = System.currentTimeMillis();
+			hasScrolledYet = true;
+		}
+		return EventResult.pass();
+	}
 
 	private boolean isMenuSneaking() {
 		if (!FTBUltimineClientConfig.REQUIRE_SNEAK_FOR_MENU.get()) return true;
 
-		return keyBindUltimine.getDefaultKey().getValue() == InputConstants.KEY_LSHIFT || keyBindUltimine.getDefaultKey().getValue() == InputConstants.KEY_RSHIFT ?
+		return keyBindUltimine != null &&
+				(keyBindUltimine.getDefaultKey().getValue() == InputConstants.KEY_LSHIFT
+						|| keyBindUltimine.getDefaultKey().getValue() == InputConstants.KEY_RSHIFT) ?
 				Minecraft.getInstance().hasControlDown() :
 				Minecraft.getInstance().hasShiftDown();
 	}
@@ -330,7 +335,7 @@ public class FTBUltimineClient extends FTBUltimineCommon {
 
 		boolean p = pressed;
 
-		if ((pressed = keyBindUltimine.isDown()) != p) {
+		if (keyBindUltimine != null && (pressed = keyBindUltimine.isDown()) != p) {
 			NetworkManager.sendToServer(new KeyPressedPacket(pressed));
 
 			if (pressed && !hasScrolledYet && mc.player != null) {

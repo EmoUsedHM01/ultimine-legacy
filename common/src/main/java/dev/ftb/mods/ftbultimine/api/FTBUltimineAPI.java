@@ -8,13 +8,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 public class FTBUltimineAPI {
     public static final String MOD_ID = "ftbultimine";
 
+    @Nullable
     private static API instance;
 
     /**
@@ -46,7 +49,7 @@ public class FTBUltimineAPI {
      * @return the API handler
      */
     public static API api() {
-        return instance;
+        return Objects.requireNonNull(instance);
     }
 
     @ApiStatus.Internal
