@@ -407,19 +407,19 @@ public class FTBUltimine {
 		// Other mods may have already intercepted this event to do similar absorption;
 		//  the only way to be sure if the entity is still valid is to check if it's alive,
 		//  and hope other mods killed the entity if they've absorbed it.
-		if (entity.isAlive() && level instanceof ServerLevel serverLevel) {
-			if (isBreakingBlock && entity instanceof ItemEntity item) {
-				if (!item.getItem().isEmpty()) {
-					tempBlockDropsList.get().add(item.getItem());
-					item.setItem(ItemStack.EMPTY);
-				}
-				return EventResult.interruptFalse();
-			} else if (isBreakingBlock && entity instanceof ExperienceOrb orb) {
-				tempBlockDroppedXp += orb.getValue();
-				entity.kill(serverLevel);
-				return EventResult.interruptFalse();
-			}
-		}
+        if (entity.isAlive() && level instanceof ServerLevel serverLevel && isBreakingBlock) {
+            if (entity instanceof ItemEntity item) {
+                if (!item.getItem().isEmpty()) {
+                    tempBlockDropsList.get().accept(item.getItem());
+                    item.setItem(ItemStack.EMPTY);
+                }
+                return EventResult.interruptFalse();
+            } else if (entity instanceof ExperienceOrb orb) {
+                tempBlockDroppedXp += orb.getValue();
+                entity.kill(serverLevel);
+                return EventResult.interruptFalse();
+            }
+        }
 		return EventResult.pass();
 	}
 
