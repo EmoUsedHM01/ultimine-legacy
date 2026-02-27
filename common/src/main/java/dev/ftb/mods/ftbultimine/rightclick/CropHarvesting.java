@@ -1,11 +1,11 @@
 package dev.ftb.mods.ftbultimine.rightclick;
 
-import dev.ftb.mods.ftbultimine.api.util.ItemCollector;
 import dev.ftb.mods.ftbultimine.api.rightclick.RightClickHandler;
+import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
 import dev.ftb.mods.ftbultimine.config.FTBUltimineServerConfig;
 import dev.ftb.mods.ftbultimine.crops.CropLikeRegistry;
-import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
 import dev.ftb.mods.ftbultimine.shape.BlockMatchers;
+import dev.ftb.mods.ftbultimine.utils.ItemCollector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +36,7 @@ public enum CropHarvesting implements RightClickHandler {
             });
         }
 
-        itemCollector.drop(player.level(), shapeContext.face() == null ? shapeContext.origPos() : shapeContext.origPos().relative(shapeContext.face()));
+        itemCollector.drop(player.level(), shapeContext.origPos().relative(shapeContext.face()));
 
         return clicked.intValue();
     }

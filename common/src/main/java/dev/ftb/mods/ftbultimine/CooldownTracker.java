@@ -23,12 +23,12 @@ public class CooldownTracker {
     private static long ultimineCooldownClient;
 
     public static long getLastUltimineTime(Player player) {
-        CooldownTracker instance = player.level().isClientSide ? clientInstance : serverInstance;
+        CooldownTracker instance = player.level().isClientSide() ? clientInstance : serverInstance;
         return instance.lastUltimineTime.getOrDefault(player.getUUID(), 0L);
     }
 
     public static void setLastUltimineTime(Player player, long when) {
-        CooldownTracker instance = player.level().isClientSide ? clientInstance : serverInstance;
+        CooldownTracker instance = player.level().isClientSide() ? clientInstance : serverInstance;
         instance.lastUltimineTime.put(player.getUUID(), when);
         if (player instanceof ServerPlayer sp) {
             NetworkManager.sendToPlayer(sp, new SyncUltimineTimePacket(when, TimeType.LAST_USED));

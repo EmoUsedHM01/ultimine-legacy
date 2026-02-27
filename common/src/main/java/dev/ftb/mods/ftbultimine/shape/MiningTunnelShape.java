@@ -1,13 +1,13 @@
 package dev.ftb.mods.ftbultimine.shape;
 
 import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class MiningTunnelShape extends DiagonalTunnelShape {
-	private static final ResourceLocation ID = FTBUltimineAPI.id("mining_tunnel");
+	private static final Identifier ID = FTBUltimineAPI.id("mining_tunnel");
 
 	@Override
-	public ResourceLocation getName() {
+	public Identifier getName() {
 		return ID;
 	}
 

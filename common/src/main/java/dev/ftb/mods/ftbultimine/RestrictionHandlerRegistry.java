@@ -2,6 +2,7 @@ package dev.ftb.mods.ftbultimine;
 
 import dev.ftb.mods.ftbultimine.api.restriction.RegisterRestrictionHandlerEvent;
 import dev.ftb.mods.ftbultimine.api.restriction.RestrictionHandler;
+import dev.ftb.mods.ftbultimine.api.util.CanUltimineResult;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Collection;
@@ -17,7 +18,12 @@ public enum RestrictionHandlerRegistry implements RegisterRestrictionHandlerEven
 		handlers.add(handler);
 	}
 
-	public boolean canUltimine(Player player) {
-        return handlers.stream().allMatch(h -> h.canUltimine(player));
+	public CanUltimineResult canUltimine(Player player) {
+		for (RestrictionHandler handler : handlers) {
+			if (!handler.canUltimine(player)) {
+				return handler.ultimineBlockReason(player);
+			}
+		}
+        return CanUltimineResult.ALLOWED;
 	}
 }

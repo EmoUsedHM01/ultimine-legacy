@@ -14,6 +14,7 @@
 * `ftbultimine:block_whitelist` - if this tag is non-empty, then _only_ blocks in this tag may be ultimined
 * `ftbultimine:farmland_tillable` - blocks in this tag can be ultimine-tilled with a hoe tool; includes grass & dirt blocks by default
 * `ftbultimine:shovel_flattenable` - blocks in this tag can be ultimine-flattened (turned to dirt path) with a shovel tool; includes grass & dirt blocks by default
+* `ftbultimine:single_crop_harvesting_blacklist` - blocks in this tag are ignored by the single crop harvesting feature; to be used if you have some custom right-click functionality on these crop blocks (including other mods which handle right-click harvesting)
 
 ## FTB Ranks Integration
 
@@ -76,6 +77,11 @@ public enum MyHandler implements RestrictionHandler {
     @Override
     public boolean canUltimine(Player player) {
         return player.getMainHandItem().getItem() instanceof SomeCustomItem;
+    }
+
+    @Override
+    public String ultimineBlockReason() {
+      return "yourmod.blockreason.translation.key";
     }
 }
 ```

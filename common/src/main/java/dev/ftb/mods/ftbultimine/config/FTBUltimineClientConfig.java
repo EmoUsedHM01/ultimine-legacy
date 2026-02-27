@@ -1,9 +1,6 @@
 package dev.ftb.mods.ftbultimine.config;
 
-import dev.ftb.mods.ftblibrary.snbt.config.BooleanValue;
-import dev.ftb.mods.ftblibrary.snbt.config.EnumValue;
-import dev.ftb.mods.ftblibrary.snbt.config.IntValue;
-import dev.ftb.mods.ftblibrary.snbt.config.SNBTConfig;
+import dev.ftb.mods.ftblibrary.config.value.*;
 import dev.ftb.mods.ftblibrary.util.PanelPositioning;
 
 import static dev.ftb.mods.ftbultimine.api.FTBUltimineAPI.MOD_ID;
@@ -11,7 +8,7 @@ import static dev.ftb.mods.ftbultimine.api.FTBUltimineAPI.MOD_ID;
 public interface FTBUltimineClientConfig {
 	String KEY = MOD_ID + "-client";
 
-	SNBTConfig CONFIG = SNBTConfig.create(KEY)
+	Config CONFIG = Config.create(KEY)
 			.comment("Client-specific configuration for FTB Ultimine",
 					"Modpack defaults should be defined in <instance>/config/" + KEY + ".snbt",
 					"  (may be overwritten on modpack update)",
@@ -19,11 +16,13 @@ public interface FTBUltimineClientConfig {
 					"  (will NOT be overwritten on modpack update)"
 			);
 
-	SNBTConfig GENERAL = CONFIG.addGroup("general");
+	Config GENERAL = CONFIG.addGroup("general");
 	BooleanValue REQUIRE_ULTIMINE_KEY_FOR_CYCLING = GENERAL.addBoolean("require_ultimine_key_for_cycling", true)
 			.comment("Does the player need to be holding the Ultimine key to cycle through shapes with the keyboard?");
+	BooleanValue SHAPE_FEEDBACK_MESSAGE = GENERAL.addBoolean("shape_feedback_hotbar_message", false)
+			.comment("When true, display the newly-selected shape as a hotbar message after an Ultimine shape change");
 
-	SNBTConfig RENDERING = CONFIG.addGroup("rendering");
+	Config RENDERING = CONFIG.addGroup("rendering");
 	IntValue RENDER_OUTLINE = RENDERING.addInt("render_outline", 256)
 			.range(0, Integer.MAX_VALUE)
 			.comment("Maximum number of blocks the white outline should be rendered for",
@@ -31,7 +30,7 @@ public interface FTBUltimineClientConfig {
 	IntValue PREVIEW_LINE_ALPHA = RENDERING.addInt("preview_line_alpha", 45, 0, 255)
 			.comment("Alpha value (0-255) for dig preview lines which are 'inside' blocks");
 
-	SNBTConfig OVERLAY = CONFIG.addGroup("overlay");
+	Config OVERLAY = CONFIG.addGroup("overlay");
 	IntValue SHAPE_MENU_CONTEXT_LINES = OVERLAY.addInt("shape_menu_context_lines", 2)
 			.range(1, 5)
 			.comment("When displaying the shape selection menu by holding the Ultimine key",
@@ -42,4 +41,5 @@ public interface FTBUltimineClientConfig {
 	EnumValue<PanelPositioning> OVERLAY_POS = OVERLAY.addEnum("overlay_pos", PanelPositioning.NAME_MAP, PanelPositioning.TOP_LEFT);
 	IntValue OVERLAY_INSET_X = OVERLAY.addInt("overlay_inset_x", 2);
 	IntValue OVERLAY_INSET_Y = OVERLAY.addInt("overlay_inset_y", 2);
+	DoubleValue OVERLAY_SCALE = OVERLAY.addDouble("overlay_scale", 1.0);
 }

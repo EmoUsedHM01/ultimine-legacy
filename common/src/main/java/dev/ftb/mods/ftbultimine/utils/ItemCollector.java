@@ -1,4 +1,4 @@
-package dev.ftb.mods.ftbultimine.api.util;
+package dev.ftb.mods.ftbultimine.utils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -7,19 +7,25 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Utility class for collecting items dropped during a multi-block ultimining operation.
  */
-public class ItemCollector {
+public class ItemCollector implements Consumer<ItemStack> {
 	private final List<ItemStack> items = new ArrayList<>();
+
+	public void clear() {
+		items.clear();
+	}
 
 	/**
 	 * Add an item to the collection.
 	 *
 	 * @param stack the itemstack to add
 	 */
-	public void add(ItemStack stack) {
+	@Override
+	public void accept(ItemStack stack) {
 		if (!stack.isEmpty()) {
 			items.add(stack.copy());
 		}

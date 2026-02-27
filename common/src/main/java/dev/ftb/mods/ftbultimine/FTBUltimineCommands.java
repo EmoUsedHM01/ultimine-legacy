@@ -9,12 +9,13 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 
 public class FTBUltimineCommands {
-    public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registry, Commands.CommandSelection selection) {
+    public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext ignoredCtx, Commands.CommandSelection ignoredSel) {
         dispatcher.register(Commands.literal("ftbultimine")
                 .then(Commands.literal("serverconfig")
-                        .requires(sourceStack -> sourceStack.isPlayer() && sourceStack.hasPermission(2))
+                        .requires(sourceStack -> sourceStack.isPlayer() && sourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                         .executes(context -> {
                             NetworkManager.sendToPlayer(context.getSource().getPlayerOrException(), EditConfigChoicePacket.server(FTBUltimineServerConfig.KEY));
                             return 1;

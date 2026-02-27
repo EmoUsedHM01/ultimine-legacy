@@ -1,16 +1,16 @@
 package dev.ftb.mods.ftbultimine.shape;
 
 import dev.ftb.mods.ftbultimine.api.FTBUltimineAPI;
-import dev.ftb.mods.ftbultimine.utils.EntityDistanceComparator;
 import dev.ftb.mods.ftbultimine.api.shape.Shape;
 import dev.ftb.mods.ftbultimine.api.shape.ShapeContext;
+import dev.ftb.mods.ftbultimine.utils.EntityDistanceComparator;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 
 public class ShapelessShape implements Shape {
-	private static final ResourceLocation ID = FTBUltimineAPI.id("shapeless");
+	private static final Identifier ID = FTBUltimineAPI.id("shapeless");
 
 	// all blocks in 3x3x3 cube around the block
 	private static final List<BlockPos> NEIGHBOR_POSITIONS = new ArrayList<>(26);
@@ -35,7 +35,7 @@ public class ShapelessShape implements Shape {
 	}
 
 	@Override
-	public ResourceLocation getName() {
+	public Identifier getName() {
 		return ID;
 	}
 

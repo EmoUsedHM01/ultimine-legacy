@@ -1,13 +1,14 @@
-package dev.ftb.mods.ftbultimine.client;
+package dev.ftb.mods.ftbultimine.utils;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.ftb.mods.ftblibrary.ui.input.Key;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PlatformUtil {
     @ExpectPlatform
-    public static boolean doesKeybindMatch(KeyMapping keyMapping, int keyCode, int scanCode, int modifiers) {
+    public static boolean playerHasCorrectTool(Player player, BlockPos pos, BlockState state) {
         throw new AssertionError();
     }
 
@@ -24,9 +25,5 @@ public class PlatformUtil {
     @ExpectPlatform
     public static boolean canFlattenPath(ItemStack stack) {
         throw new AssertionError();
-    }
-
-    public static boolean doesKeybindMatch(KeyMapping keyMapping, Key key) {
-        return doesKeybindMatch(keyMapping, key.keyCode, key.scanCode, key.modifiers.modifiers);
     }
 }

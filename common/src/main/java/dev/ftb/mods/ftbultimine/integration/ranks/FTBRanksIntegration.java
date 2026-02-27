@@ -26,26 +26,24 @@ public class FTBRanksIntegration {
     }
 
     private static void updatePlayer(RankEvent.Player event) {
-        ServerPlayer sp = event.getManager().getServer().getPlayerList().getPlayer(event.getPlayer().getId());
+        ServerPlayer sp = event.getManager().getServer().getPlayerList().getPlayer(event.getPlayer().id());
         if (sp != null) {
             NetworkManager.sendToPlayer(sp, new SyncUltimineTimePacket(FTBUltimineServerConfig.getUltimineCooldown(sp), TimeType.COOLDOWN));
         }
     }
 
     private static void updateAllPlayers(RankEvent event) {
-        event.getManager().getServer().getPlayerList().getPlayers().forEach(sp -> {
-            NetworkManager.sendToPlayer(sp, new SyncUltimineTimePacket(FTBUltimineServerConfig.getUltimineCooldown(sp), TimeType.COOLDOWN));
-        });
+        event.getManager().getServer().getPlayerList().getPlayers().forEach(sp ->
+                NetworkManager.sendToPlayer(sp, new SyncUltimineTimePacket(FTBUltimineServerConfig.getUltimineCooldown(sp), TimeType.COOLDOWN))
+        );
     }
 
-    public static int getMaxBlocks(ServerPlayer player) {
-        return FTBRanksAPI.getPermissionValue(player, MAX_BLOCKS_PERM).asInteger()
-                .orElse(FTBUltimineServerConfig.MAX_BLOCKS.get());
+    public static int getMaxBlocks(ServerPlayer player, int defMax) {
+        return FTBRanksAPI.getPermissionValue(player, MAX_BLOCKS_PERM).asInteger().orElse(defMax);
     }
 
-    public static long getUltimineCooldown(ServerPlayer player) {
-        return FTBRanksAPI.getPermissionValue(player, COOLDOWN_PERM).asLong()
-                .orElse(FTBUltimineServerConfig.ULTIMINE_COOLDOWN.get());
+    public static long getUltimineCooldown(ServerPlayer player, long defCooldown) {
+        return FTBRanksAPI.getPermissionValue(player, COOLDOWN_PERM).asLong().orElse(defCooldown);
     }
 
     public static double getExperiencePerBlock(ServerPlayer player) {

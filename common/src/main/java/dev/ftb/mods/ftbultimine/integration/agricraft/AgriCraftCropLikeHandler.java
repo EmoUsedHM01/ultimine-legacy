@@ -2,13 +2,15 @@ package dev.ftb.mods.ftbultimine.integration.agricraft;
 
 import com.agricraft.agricraft.api.AgriApi;
 import com.agricraft.agricraft.api.crop.AgriCrop;
-import dev.ftb.mods.ftbultimine.api.util.ItemCollector;
 import dev.ftb.mods.ftbultimine.api.crop.CropLikeHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.function.Consumer;
 
 public enum AgriCraftCropLikeHandler implements CropLikeHandler {
     INSTANCE;
@@ -19,9 +21,9 @@ public enum AgriCraftCropLikeHandler implements CropLikeHandler {
     }
 
     @Override
-    public boolean doHarvesting(Player player, BlockPos pos, BlockState state, ItemCollector itemCollector) {
+    public boolean doHarvesting(Player player, BlockPos pos, BlockState state, Consumer<ItemStack> itemCollector) {
         return AgriApi.getCrop(player.level(), pos)
-                .map(crop -> crop.harvest(itemCollector::add, player))
+                .map(crop -> crop.harvest(itemCollector, player))
                 .orElse(false);
     }
 

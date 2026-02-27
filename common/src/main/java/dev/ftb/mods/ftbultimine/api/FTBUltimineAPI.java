@@ -2,16 +2,22 @@ package dev.ftb.mods.ftbultimine.api;
 
 import dev.ftb.mods.ftbultimine.api.blockselection.BlockSelectionHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 public class FTBUltimineAPI {
     public static final String MOD_ID = "ftbultimine";
 
+    @Nullable
     private static API instance;
 
     /**
@@ -25,7 +31,7 @@ public class FTBUltimineAPI {
             return false;
         }
         FoodData data = player.getFoodData();
-        return data.getExhaustionLevel() / 4f > data.getSaturationLevel() + data.getFoodLevel();
+        return data.exhaustionLevel / 4f > data.getSaturationLevel() + data.getFoodLevel();
     }
 
     /**
@@ -33,8 +39,8 @@ public class FTBUltimineAPI {
      * @param path the path
      * @return the resource location
      */
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     /**
@@ -43,7 +49,7 @@ public class FTBUltimineAPI {
      * @return the API handler
      */
     public static API api() {
-        return instance;
+        return Objects.requireNonNull(instance);
     }
 
     @ApiStatus.Internal
@@ -58,6 +64,14 @@ public class FTBUltimineAPI {
      * Top-level API. Retrieve an instance of this via {@link FTBUltimineAPI#api()}.
      */
     public interface API {
+        /**
+         * Get a collection of the block positions in the player's current selection.
+         * @param player the player to check
+         * @return an optional collection of the block positions the player has selected;
+         *   {@code Optional.empty()} if the player is not currently ultimining
+         */
+        Optional<Collection<BlockPos>> currentBlockSelection(Player player);
+
         /**
          * Called by {@link dev.ftb.mods.ftbultimine.api.shape.ShapeContext#check(BlockPos)} to handle any custom
          * block equivalence checks. You should not normally need to call this directly.
