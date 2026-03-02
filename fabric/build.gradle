@@ -23,13 +23,13 @@ artifacts {
 	dev(jar)
 }
 
-//sourceSets {
-//	main {
-//		resources {
-//			srcDir generatedResources
-//		}
-//	}
-//}
+sourceSets {
+	main {
+		resources {
+			srcDir generatedResources
+		}
+	}
+}
 
 loom {
 	accessWidenerPath = accessWidenerFile

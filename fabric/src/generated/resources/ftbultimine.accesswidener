@@ -1,3 +1,4 @@
-accessWidener v1 named
-accessible field net/minecraft/client/KeyMapping key Lcom/mojang/blaze3d/platform/InputConstants$Key;
+accessWidener v2 named
+
 accessible method net/minecraft/world/level/block/CropBlock getAgeProperty ()Lnet/minecraft/world/level/block/state/properties/IntegerProperty;
+accessible field net/minecraft/world/food/FoodData exhaustionLevel F
