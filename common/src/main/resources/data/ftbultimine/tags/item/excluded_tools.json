@@ -1,9 +1,0 @@
-{
-	"replace": false,
-	"values": [
-		{
-			"id": "#ftbultimine:excluded_tools/strict",
-			"required": false
-		}
-	]
-}

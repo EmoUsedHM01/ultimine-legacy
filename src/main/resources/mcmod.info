@@ -1,0 +1,13 @@
+[
+  {
+    "modid": "ftbultimine",
+    "name": "FTB Ultimine",
+    "description": "Allows you to break multiple blocks at once by holding a key.",
+    "version": "${version}",
+    "mcversion": "1.7.10",
+    "url": "",
+    "authorList": ["FTB Team (original)", "Ported for GTNH"],
+    "credits": "Original mod by FTB Team",
+    "dependencies": []
+  }
+]

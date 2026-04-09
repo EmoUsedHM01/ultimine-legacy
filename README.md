@@ -1,164 +1,82 @@
-# FTB Ultimine
+<!-- modrinth_exclude.start -->
 
-## Tags
+# FTB Ultimine Legacy
 
-### Item Tags
+A 1.7.10 backport of [FTB Ultimine](https://github.com/FTBTeam/FTB-Ultimine) by the FTB Team, designed for [GT New Horizons](https://www.gtnewhorizons.com/).
 
-* `ftbultimine:excluded_tools` - items in this tag can't be used for ultimining (applies to main hand slot)
-* `ftbultimine:excluded_tools/strict` - items in this tag can't be used for ultimining (applies to main _and_ offhand slots)
-* `ftbultimine:included_tools` - if `require_tool` is true in server config, by default only "tool" items can be used (tiered items with durability); this can be used to allow extra items
+## Links
 
-### Block Tags
+- [Original Mod - CurseForge](https://www.curseforge.com/minecraft/mc-mods/ftb-ultimine-forge)
+- [Credits](https://github.com/FTBTeam/FTB-Ultimine)
 
-* `ftbultimine:excluded_blocks` - blocks in this tag may never be ultimined
-* `ftbultimine:block_whitelist` - if this tag is non-empty, then _only_ blocks in this tag may be ultimined
-* `ftbultimine:farmland_tillable` - blocks in this tag can be ultimine-tilled with a hoe tool; includes grass & dirt blocks by default
-* `ftbultimine:shovel_flattenable` - blocks in this tag can be ultimine-flattened (turned to dirt path) with a shovel tool; includes grass & dirt blocks by default
-* `ftbultimine:single_crop_harvesting_blacklist` - blocks in this tag are ignored by the single crop harvesting feature; to be used if you have some custom right-click functionality on these crop blocks (including other mods which handle right-click harvesting)
+---
 
-## FTB Ranks Integration
+<!-- modrinth_exclude.end -->
 
-Following nodes can be configured via [FTB Ranks](https://www.curseforge.com/minecraft/mc-mods/ftb-ranks-forge):
+Allows you to break multiple blocks at once by holding a key. Hold the Ultimine key (default: `` ` `` grave/tilde), mine a block, and all connected matching blocks will break too. Scroll the mouse wheel while holding the key to cycle between mining shapes.
 
-* `ftbultimine.max_blocks` - if present in a player's rank, overrides the server `max_blocks` config setting
-* `ftbultimine.ultimine_cooldown` - if present in a player's rank, overrides the server `ultimine_cooldown` setting
+## Mining Shapes
 
-## Modder API
+- **Shapeless** - Flood-fill that breaks all connected blocks of the same type.
+- **Small Tunnel** - 1-wide, 2-high tunnel in the direction you face.
+- **Large Tunnel** - 3-wide, 3-high tunnel in the direction you face.
+- **Small Square** - 3x3 area on the face you hit.
+- **Mining Tunnel** - 3-wide, 2-high tunnel in the direction you face.
+- **Escape Tunnel** - Staircase going upward in the direction you face.
 
-Note: anything in the `dev.ftb.mods.ftbultimine.api` package is public API, and we will make every effort to keep this API stable. Any code outside the `api` package is subject to change without notice - please to try to avoid using this code directly. [Contact us](https://go.ftb.team/support-mod-issues) if you want to create an addon mod that the existing API does not cover, and we will try to help.
+## Right-Click Features
 
-FTB Ultimine fires a few Architectury events intended to make it easy for modders to write plugins and extension to FTB Ultimine.
+- **Hoe Tilling** - Right-click with a hoe to till multiple grass/dirt blocks into farmland.
+- **Crop Harvesting** - Right-click mature vanilla crops to harvest and replant them in bulk.
 
-### Custom right-click handlers
+## Configuration
 
-This provides for custom behaviour when a block is right-clicked and the Ultimine key is currently pressed. Look at code in the `dev.ftb.mods.ftbultimine.rightclick` package for examples.
+All settings are in `config/ftbultimine.cfg`:
 
-In your mod constructor, register an instance of a class which implements `RightClickHandler`:
-```java
-RegisterRightClickHandlerEvent.REGISTER.register(dispatcher -> dispatcher.registerHandler(MyHandler.INSTANCE));
-```
+- `maxBlocks` - Maximum blocks per operation (default: 64)
+- `exhaustionPerBlock` - Hunger cost per extra block (default: 20)
+- `preventToolBreak` - Stop ultimining when tool durability is low (default: true)
+- `cancelOnBlockBreakFail` - Stop if a block can't be broken, e.g. protected area (default: true)
+- `requireTool` - Require a damageable tool to ultimine (default: false)
+- `ultimineCooldown` - Cooldown in ticks between uses (default: 0)
+- `mergeTagsShapeless` - Treat blocks sharing Ore Dictionary entries as the same in shapeless mode (default: true)
+- `renderOutlineMax` - Max blocks to show in the preview outline (default: 256)
 
-Example handler:
-```java
-public enum MyHandler implements RightClickHandler {
-    INSTANCE;
+## Changes from the Original Mod
 
-    @Override
-    public int handleRightClickBlock(ShapeContext shapeContext, InteractionHand hand, Collection<BlockPos> positions) {
-        // do the work you need here
-        return numberOfBlocksAffected;
-    }
-}
-```
+This backport targets Minecraft 1.7.10 with Forge 10.13.4.1614. The following changes have been made compared to the original FTB Ultimine:
 
-### Custom crop types
+### Removed Features
 
-This allows for detection of custom crops which don't behave like vanilla crops. Builtin support is included for Agricraft (see the `AgriCraftCropLikeHandler` class).
+- **FTB Library Dependency** - Not required; the mod is fully standalone with no library dependencies.
+- **Architectury Dependency** - Not required; replaced with direct Forge API calls.
+- **Data-Driven Tags** - Item and block tags (excluded tools, block whitelist, etc.) are not available. Block matching uses Ore Dictionary instead.
+- **Radial Shape Menu** - The shape selection wheel GUI is not implemented; shapes are cycled via scroll wheel with the name shown in chat.
+- **FTB Ranks Integration** - Permission node overrides for max blocks and cooldown are not available.
+- **Modder API** - The plugin system for custom right-click handlers, crop types, restriction handlers, shapes, block-break handlers, and block-selection handlers is not implemented.
+- **Custom Attributes** - Attribute modifiers for max blocks, cooldown, exhaustion, and experience are not available.
+- **Axe Stripping** - Multi-block log stripping did not exist in 1.7.10.
+- **Shovel Path Creation** - Dirt paths did not exist in 1.7.10.
+- **SNBT Config System** - Replaced with standard Forge Configuration file.
+- **Ultiminer Item** - The ultiminer tool item is not included.
 
-In your mod constructor, register an instance of a class which implements `CropLikeHandler`:
+### Changed Features
 
-```java
-RegisterCropLikeEvent.REGISTER.register(registry -> registry.register(MyHandler.INSTANCE));
-```
+- **Block Matching** - Uses Ore Dictionary lookups instead of data-driven block tags. Blocks sharing any Ore Dictionary entry are treated as equivalent in shapeless mode.
+- **Harvest Check** - Each block is checked with `ForgeHooks.canHarvestBlock` before breaking, so blocks requiring a higher-tier tool are skipped rather than broken without drops.
+- **Shape Cycling** - Scroll wheel while holding the Ultimine key cycles shapes and cancels the vanilla hotbar scroll. Shape name is displayed via chat message.
+- **Crop Harvesting** - Supports vanilla crops only (blocks extending `BlockCrops` with max metadata 7). AgriCraft and other custom crop integrations are not included.
+- **Networking** - Uses Forge `SimpleNetworkWrapper` instead of Architectury's `SimpleNetworkManager`.
+- **Outline Renderer** - Uses GL immediate mode line drawing instead of modern `VoxelShape`-based rendering.
 
-See `VanillaCropLikeHandler` or `AgriCraftCropLikeHandler` for examples.
+### Technical Details
 
-### Custom ultimining restrictions
-
-This can be used to restrict players' ability to ultimine based on criteria of your choosing.
-
-```java
-RegisterRestrictionHandlerEvent.REGISTER.register(registry -> registry.register(MyHandler.INSTANCE));
-```
-
-Example to require player to be holding a specific item:
-```java
-public enum MyHandler implements RestrictionHandler {
-    @Override
-    public boolean canUltimine(Player player) {
-        return player.getMainHandItem().getItem() instanceof SomeCustomItem;
-    }
-
-    @Override
-    public String ultimineBlockReason() {
-      return "yourmod.blockreason.translation.key";
-    }
-}
-```
-
-### Custom ultimining shapes
-
-This can be used to register custom ultimining shapes.
-
-In your mod constructor, register an instance of the `Shape` interface:
-
-```java
-RegisterShapeEvent.REGISTER.register(registry -> registry.register(MyShape.INSTANCE));
-```
-
-### Custom block-break handlers
-
-In most cases, the default break strategy (simply to break the block and produce its drops) is fine. However, there may be a need at times when breaking blocks to have a little more control. An example is EnderIO conduit bundles, where you might want to break all the connected item conduits while leaving other parts of the bundle alone. This can be achieved with a custom block-break handler.
-
-To register a custom block-break handler:
-
-```java
-RegisterBlockBreakHandlerEvent.REGISTER.register(registry -> registry.register(MyBlockBreakHandler.INSTANCE));
-```
-
-```java
-enum MyBlockBreakHandler implements BlockBreakHandler {
-  INSTANCE;
-
-  @Override
-  public Result breakBlock(Player player, BlockPos pos, BlockState state, Shape shape, BlockHitResult hitResult) {
-    // check if it's your block, and if not return PASS asap
-    if (!isMyBlock(state)) {
-       return PASS;
-    }
-    // do your custom block break logic here, return SUCCESS or FAIL as appopriate
-    return SUCCESS;
-  }
-}
-```
-
-### Custom block-selection handlers
-
-Block selection determines which blocks will be included in the next ultimining operation, and is shown by the white outline on blocks when the ultimine key is held. By default, this is controlled by the current ultimining shape (and depending on the shape, the currently focused block). For the `Shapeless` shape, this can be customised; using EnderIO conduits again as an example, you might want to only select blocks which have the same facade as the focused block.
-
-To register a custom block-selection handler:
-
-```java
-RegisterBlockSelectionHandlerEvent.REGISTER.register(registry -> registry.register(MySelectionHandler.INSTANCE));
-```
-
-```java
-public enum MySelectionHandler implements BlockSelectionHandler {
-  INSTANCE;
-
-  @Override
-  public Result customSelectionCheck(Player player, BlockPos origPos, BlockPos pos, BlockState origState, BlockState state) {
-     // Called for every block in the current shape; keep the checks quick and efficient!
-      
-     // check if it's your block first, and return Result.PASS immediately if it's not
-
-     // then check for block equivalence (e.g. do both blocks have the same facade?)
-     // return Result.TRUE or Result.FALSE as appropriate
-     return Result.TRUE;
-  }
-}
-```
-
-## Support
-
-- For **Modpack** issues, please go here: https://go.ftb.team/support-modpack
-- For **Mod** issues, please go here: https://go.ftb.team/support-mod-issues
-- Just got a question? Check out our Discord: https://go.ftb.team/discord
+- Built with RetroFuturaGradle for GTNH compatibility.
+- Uses `ForgeDirection` and raw `(x, y, z)` coordinates instead of `BlockPos` (not available in 1.7.10).
+- Keybinding localization uses `assets/ftbultimine/lang/en_US.lang` instead of JSON.
+- Scroll wheel interception uses Forge's cancellable `MouseEvent` at `HIGHEST` priority to prevent hotbar switching.
+- Block breaking fires `BlockEvent.BreakEvent` for each extra block, respecting protection mods and other event listeners.
 
 ## Licence
 
 All Rights Reserved to Feed The Beast Ltd. Source code is `visible source`, please see our [LICENSE.md](/LICENSE.md) for more information. Any Pull Requests made to this mod must have the CLA (Contributor Licence Agreement) signed and agreed to before the request will be considered.
-
-## Keep up to date
-
-[![](https://cdn.feed-the-beast.com/assets/socials/icons/social-discord.webp)](https://go.ftb.team/discord) [![](https://cdn.feed-the-beast.com/assets/socials/icons/social-github.webp)](https://go.ftb.team/github) [![](https://cdn.feed-the-beast.com/assets/socials/icons/social-twitter-x.webp)](https://go.ftb.team/twitter) [![](https://cdn.feed-the-beast.com/assets/socials/icons/social-youtube.webp)](https://go.ftb.team/youtube) [![](https://cdn.feed-the-beast.com/assets/socials/icons/social-twitch.webp)](https://go.ftb.team/twitch) [![](https://cdn.feed-the-beast.com/assets/socials/icons/social-instagram.webp)](https://go.ftb.team/instagram) [![](https://cdn.feed-the-beast.com/assets/socials/icons/social-facebook.webp)](https://go.ftb.team/facebook) [![](https://cdn.feed-the-beast.com/assets/socials/icons/social-tiktok.webp)](https://go.ftb.team/tiktok)
