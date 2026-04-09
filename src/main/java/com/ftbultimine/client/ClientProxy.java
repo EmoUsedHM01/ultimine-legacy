@@ -1,6 +1,7 @@
 package com.ftbultimine.client;
 
 import com.ftbultimine.CommonProxy;
+import com.ftbultimine.network.PacketHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -12,6 +13,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        PacketHandler.initClient();
     }
 
     @Override
