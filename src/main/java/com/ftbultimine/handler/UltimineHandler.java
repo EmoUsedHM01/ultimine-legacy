@@ -18,6 +18,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -89,9 +91,9 @@ public class UltimineHandler {
 
                 if (block.isAir(world, pos.x, pos.y, pos.z)) continue;
 
-                // Check tool durability
+                // Check tool durability - stop before the tool would break
                 if (Config.preventToolBreak && heldItem != null && heldItem.getItem().isDamageable()) {
-                    if (heldItem.getItemDamage() >= heldItem.getMaxDamage() - 1) {
+                    if (heldItem.getItemDamage() >= heldItem.getMaxDamage()) {
                         break;
                     }
                 }
@@ -175,14 +177,30 @@ public class UltimineHandler {
     }
 
     /**
-     * Determine which face the player is looking at based on their look direction.
+     * Server-side raytrace to determine which face the player is looking at.
+     * This matches the client-side MovingObjectPosition.sideHit used by the outline renderer.
      */
     private ForgeDirection getBreakFace(EntityPlayer player) {
-        float pitch = player.rotationPitch;
-        if (pitch < -45.0F) return ForgeDirection.UP;
-        if (pitch > 45.0F) return ForgeDirection.DOWN;
+        double reach = player instanceof EntityPlayerMP
+            ? ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance()
+            : 5.0;
+        Vec3 eyePos = Vec3.createVectorHelper(
+            player.posX,
+            player.posY + (double) player.getEyeHeight(),
+            player.posZ);
+        Vec3 lookVec = player.getLookVec();
+        Vec3 endPos = Vec3.createVectorHelper(
+            eyePos.xCoord + lookVec.xCoord * reach,
+            eyePos.yCoord + lookVec.yCoord * reach,
+            eyePos.zCoord + lookVec.zCoord * reach);
 
-        return ForgeDirection.VALID_DIRECTIONS[
-            com.ftbultimine.shape.ShapedShapes.getPlayerFacingHorizontal(player).ordinal()];
+        MovingObjectPosition mop = player.worldObj.rayTraceBlocks(eyePos, endPos);
+        if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            return ForgeDirection.getOrientation(mop.sideHit);
+        }
+
+        // Fallback if raytrace fails
+        return ForgeDirection.getOrientation(
+            com.ftbultimine.shape.ShapedShapes.getPlayerFacingHorizontal(player).ordinal());
     }
 }
