@@ -40,14 +40,14 @@ public class UltimineHandler {
         if (isProcessing) return;
 
         EntityPlayer player = event.getPlayer();
-        if (player == null || player.worldObj.isRemote) return;
+        if (player == null || event.world.isRemote) return;
         if (!(player instanceof EntityPlayerMP)) return;
 
         PlayerData data = PlayerDataManager.get(player);
         if (!data.isUltimineActive()) return;
 
         // Cooldown check
-        long currentTime = player.worldObj.getTotalWorldTime();
+        long currentTime = event.world.getTotalWorldTime();
         if (data.isOnCooldown(currentTime)) return;
 
         // Tool check
@@ -64,7 +64,7 @@ public class UltimineHandler {
         int originMeta = event.blockMetadata;
 
         // Get the face from the player's look direction
-        ForgeDirection face = getBreakFace(player);
+        ForgeDirection face = getBreakFace(player, world);
 
         // Get blocks to break
         Shape shape = ShapeRegistry.getShape(data.getCurrentShape());
@@ -183,7 +183,7 @@ public class UltimineHandler {
      * Server-side raytrace to determine which face the player is looking at.
      * This matches the client-side MovingObjectPosition.sideHit used by the outline renderer.
      */
-    private ForgeDirection getBreakFace(EntityPlayer player) {
+    private ForgeDirection getBreakFace(EntityPlayer player, World world) {
         double reach = player instanceof EntityPlayerMP
             ? ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance()
             : 5.0;
@@ -197,7 +197,7 @@ public class UltimineHandler {
             eyePos.yCoord + lookVec.yCoord * reach,
             eyePos.zCoord + lookVec.zCoord * reach);
 
-        MovingObjectPosition mop = player.worldObj.rayTraceBlocks(eyePos, endPos);
+        MovingObjectPosition mop = world.rayTraceBlocks(eyePos, endPos);
         if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             return ForgeDirection.getOrientation(mop.sideHit);
         }

@@ -37,7 +37,7 @@ public class RightClickHandler {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (isProcessing) return;
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
-        if (event.entityPlayer == null || event.entityPlayer.worldObj.isRemote) return;
+        if (event.entityPlayer == null || event.world.isRemote) return;
 
         EntityPlayer player = event.entityPlayer;
         PlayerData data = PlayerDataManager.get(player);
