@@ -121,13 +121,10 @@ public class UltimineHandler {
                     }
                 }
 
-                // Damage tool
-                if (heldItem != null && heldItem.getItem().isDamageable()) {
-                    heldItem.damageItem(1, player);
-                    if (heldItem.stackSize <= 0) {
-                        player.destroyCurrentEquippedItem();
-                        break;
-                    }
+                // Check if tool broke (onBlockDestroyed in breakBlockAsPlayer handles damage)
+                if (heldItem != null && heldItem.stackSize <= 0) {
+                    player.destroyCurrentEquippedItem();
+                    break;
                 }
             }
         } finally {
@@ -168,6 +165,12 @@ public class UltimineHandler {
         int xp = breakEvent.getExpToDrop();
         if (xp > 0) {
             block.dropXpOnBlockBreak(world, x, y, z, xp);
+        }
+
+        // Notify the held item that a block was destroyed (triggers TiCon tool XP, etc.)
+        ItemStack heldItem = player.getCurrentEquippedItem();
+        if (heldItem != null) {
+            heldItem.func_150999_a(world, block, x, y, z, player);
         }
 
         // Remove the block
