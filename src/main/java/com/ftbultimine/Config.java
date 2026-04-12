@@ -14,7 +14,7 @@ public class Config {
     public static double experiencePerBlock = 0.0;
     public static boolean preventToolBreak = true;
     public static boolean cancelOnBlockBreakFail = true;
-    public static boolean requireTool = false;
+    public static boolean requireTool = true;
     public static int ultimineCooldown = 0;
     public static boolean mergeTagsShapeless = true;
 
@@ -42,7 +42,7 @@ public class Config {
             "Prevent tool from breaking by stopping ultimine when durability is low.");
         cancelOnBlockBreakFail = config.getBoolean("cancelOnBlockBreakFail", "server", true,
             "Cancel remaining blocks if one block fails to break (e.g. protected area).");
-        requireTool = config.getBoolean("requireTool", "server", false,
+        requireTool = config.getBoolean("requireTool", "server", true,
             "Require the player to hold a damageable tool to use ultimine.");
         ultimineCooldown = config.getInt("ultimineCooldown", "server", 0, 0, 72000,
             "Cooldown in ticks between ultimine operations. 0 = no cooldown.");
