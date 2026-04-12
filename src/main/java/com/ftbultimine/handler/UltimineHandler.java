@@ -149,6 +149,16 @@ public class UltimineHandler {
             return false;
         }
 
+        // Notify the held item BEFORE the block breaks
+        // This triggers TiCon's ToolCore.onBlockStartBreak -> ActiveToolMod.beforeBlockBreak
+        // which is where IguanaTweaks awards tool XP via LevelingActiveToolMod
+        ItemStack heldItem = player.getCurrentEquippedItem();
+        if (heldItem != null && heldItem.getItem() != null) {
+            if (heldItem.getItem().onBlockStartBreak(heldItem, x, y, z, player)) {
+                return false; // Item cancelled the break
+            }
+        }
+
         // Fire break event
         BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(
             x, y, z, world, block, meta, player);
@@ -161,15 +171,15 @@ public class UltimineHandler {
         // Drop items
         block.harvestBlock(world, player, x, y, z, meta);
 
-        // Give XP
+        // Give XP orbs
         int xp = breakEvent.getExpToDrop();
         if (xp > 0) {
             block.dropXpOnBlockBreak(world, x, y, z, xp);
         }
 
-        // Notify the held item that a block was destroyed (triggers TiCon tool XP, etc.)
-        ItemStack heldItem = player.getCurrentEquippedItem();
-        if (heldItem != null) {
+        // Notify the held item AFTER the block is destroyed
+        // This triggers Item.onBlockDestroyed for tool damage and TiCon's afterBlockBreak
+        if (heldItem != null && heldItem.getItem() != null) {
             heldItem.func_150999_a(world, block, x, y, z, player);
         }
 
